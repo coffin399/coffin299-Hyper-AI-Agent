@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "BYOK multi-provider AI agent with RAG and automation",
   "main": "electron.js",
+  "author": {
+    "name": "Hyper AI Agent",
+    "email": "contact@example.com"
+  },
   "scripts": {
     "dev": "electron .",
     "build": "electron-builder",
