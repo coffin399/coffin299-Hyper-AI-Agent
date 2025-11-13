@@ -109,6 +109,32 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Electron app (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: npm run build -- --linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Electron app (Windows)
+        if: matrix.os == 'windows-latest'
+        run: npm run build -- --win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Electron app (macOS)
+        if: matrix.os == 'macos-latest'
+        run: npm run build -- --mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Get current date (version)
         id: date
         run: echo "VERSION=$(date +'%Y.%m.%d')" >> $GITHUB_OUTPUT
@@ -131,10 +157,6 @@ jobs:
           body: |
             # Hyper AI Agent v${{ steps.date.outputs.VERSION }}
 
-            🚀 BYOK multi-provider AI agent with RAG and automation
-            🚀 BYOK multi-provider AI agent with RAG and automation
-            🚀 BYOK multi-provider AI agent with RAG and automation
-            🚀 BYOK multi-provider AI agent with RAG and automation
             🚀 BYOK multi-provider AI agent with RAG and automation
             ## 🎯 主な機能
 
