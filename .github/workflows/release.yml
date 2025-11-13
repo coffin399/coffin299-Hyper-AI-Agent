@@ -12,6 +12,11 @@ on:
           - electron
           - android
           - both
+      create_release:
+        description: "Create tagged GitHub release when manually triggered"
+        required: false
+        default: false
+        type: boolean
   push:
     branches:
       - main
@@ -127,39 +132,93 @@ jobs:
 
       - name: Build Electron app (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: npm run build -- --linux
+        run: npm run build -- --linux --publish=never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Electron app (Windows)
         if: matrix.os == 'windows-latest'
-        run: npm run build -- --win
+        run: npm run build -- --win --publish=never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Electron app (macOS)
         if: matrix.os == 'macos-latest'
-        run: npm run build -- --mac
+        run: npm run build -- --mac --publish=never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Electron artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: electron-${{ matrix.os }}
+          path: release/**
+          retention-days: 14
+
+  publish-release:
+    needs:
+      - build-electron
+      - build-android
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.create_release == 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Get current date (version)
         id: date
         run: echo "VERSION=$(date +'%Y.%m.%d')" >> $GITHUB_OUTPUT
 
-      - name: Create and push tag
-        if: matrix.os == 'ubuntu-latest'
+      - name: Configure Git for tagging
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          # Force create and push tag (overwrite existing)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create or update tag
+        run: |
           git tag -f v${{ steps.date.outputs.VERSION }} -m "Release v${{ steps.date.outputs.VERSION }}"
           git push origin v${{ steps.date.outputs.VERSION }} --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Download Electron artifacts (Linux)
+        uses: actions/download-artifact@v4
+        with:
+          name: electron-ubuntu-latest
+          path: artifacts/electron/linux
+          if-no-files-found: ignore
+
+      - name: Download Electron artifacts (Windows)
+        uses: actions/download-artifact@v4
+        with:
+          name: electron-windows-latest
+          path: artifacts/electron/windows
+          if-no-files-found: ignore
+
+      - name: Download Electron artifacts (macOS)
+        uses: actions/download-artifact@v4
+        with:
+          name: electron-macos-latest
+          path: artifacts/electron/macos
+          if-no-files-found: ignore
+
+      - name: Download Android debug APK
+        uses: actions/download-artifact@v4
+        with:
+          name: android-debug-apk
+          path: artifacts/android/debug
+          if-no-files-found: ignore
+
+      - name: Download Android release APK
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release-apk
+          path: artifacts/android/release
+          if-no-files-found: ignore
+
       - name: Create or Update Release
-        if: matrix.os == 'ubuntu-latest'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.date.outputs.VERSION }}
@@ -167,79 +226,13 @@ jobs:
           body: |
             # Hyper AI Agent v${{ steps.date.outputs.VERSION }}
 
-            🚀 BYOK multi-provider AI agent with RAG and automation
-            ## 🎯 主な機能
-
-            ### 🤖 AIプロバイダー対応
-            - OpenAI (GPT-4, GPT-3.5)
-            - Anthropic (Claude-3)
-            - Google Gemini
-            - Ollama (ローカルモデル)
-            - 自動フェイルオーバーと負荷分散
-
-            ### 🧠 コンテキスト管理
-            - 会話履歴の永続化
-            - ベクトルメモリ検索 (RAG)
-            - 自動要約機能
-            - セマンティック検索
-
-            ### 🛠️ ツール統合
-            - ファイルシステム操作
-            - Webスクレイピング
-            - カレンダー管理
-            - メール送信
-            - コード実行 (サンドボックス)
-            - データベースクエリ
-
-            ### ⚡ 自動化
-            - Cronスケジュール
-            - ファイル監視トリガー
-            - Webhook対応
-            - ワークフロー実行
-
-            ### 🖥️ ローカルモデル管理
-            - PCスペック別モデル推奨
-            - Qwen3/Gemma3対応
-            - 一括ダウンロード/削除
-            - リアルタイム進捗表示
-
-            ## 📦 インストール
-
-            ### Windows
-            1. `Hyper-AI-Agent-Setup-${{ steps.date.outputs.VERSION }}.exe` をダウンロード
-            2. インストーラーを実行
-            3. アプリケーションを起動
-
-            ### macOS
-            1. `Hyper-AI-Agent-${{ steps.date.outputs.VERSION }}.dmg` をダウンロード
-            2. DMGファイルを開く
-            3. アプリケーションフォルダにドラッグ
-
-            ### Linux
-            1. `Hyper-AI-Agent-${{ steps.date.outputs.VERSION }}.AppImage` をダウンロード
-            2. 実行権限を付与: `chmod +x *.AppImage`
-            3. 実行: `./Hyper-AI-Agent-${{ steps.date.outputs.VERSION }}.AppImage`
-
-            ## ⚙️ 初期設定
-
-            1. APIキーを設定 (OpenAI, Anthropic, Google)
-            2. Ollamaをインストール (ローカルモデル使用の場合)
-            3. プロジェクトを作成して開始
-
-            ## 🔗 リンク
-
-            - ドキュメント: [README](https://github.com/coffin299/coffin299-Hyper-AI-Agent/blob/main/README.md)
-            - バグ報告: [Issues](https://github.com/coffin299/coffin299-Hyper-AI-Agent/issues)
-            - 機能要望: [Discussions](https://github.com/coffin299/coffin299-Hyper-AI-Agent/discussions)
-
-            ---
-
-            🔒 セキュリティ: APIキーはローカルでAES暗号化保存
-            🌈 オープンソース: Apache2.0ライセンス
+            - 🪟 Windows: EXE/Portable
+            - 🍎 macOS: DMG
+            - 🐧 Linux: AppImage, DEB, RPM
+            - 🤖 Android: APK
           files: |
-            release/*.exe
-            release/*.dmg
-            release/*.AppImage
+            artifacts/electron/**/*
+            artifacts/android/**/*.apk
           draft: false
           prerelease: false
         env:
