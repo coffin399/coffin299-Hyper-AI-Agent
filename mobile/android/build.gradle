@@ -1,4 +1,8 @@
 buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
     ext {
         buildToolsVersion = "33.0.0"
         minSdkVersion = 21
