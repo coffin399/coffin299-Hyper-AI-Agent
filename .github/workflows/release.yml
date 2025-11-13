@@ -73,12 +73,12 @@ jobs:
 
       - name: Make gradlew executable
         run: |
-          cd android
+          cd mobile/android
           chmod +x gradlew
 
       - name: Build Debug APK
         run: |
-          cd android
+          cd mobile/android
           ./gradlew assembleDebug
 
       - name: Upload Debug APK artifact
@@ -91,7 +91,7 @@ jobs:
       - name: Build Release APK
         if: github.event_name == 'workflow_dispatch' && (inputs.target == 'android' || inputs.target == 'both') && inputs.create_release == 'true'
         run: |
-          cd android
+          cd mobile/android
           ./gradlew assembleRelease
         env:
           MYAPP_UPLOAD_STORE_FILE: ../keystore/release.keystore
