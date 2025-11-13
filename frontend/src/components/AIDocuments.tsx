@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Card,
@@ -10,7 +10,6 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Chip,
   Alert,
   Dialog,
   DialogTitle,
@@ -58,11 +57,7 @@ const AIDocuments: React.FC = () => {
   const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadTemplates();
-  }, [activeTab]);
-
-  const loadTemplates = async () => {
+  const loadTemplates = useCallback(async () => {
     try {
       const endpoint = `/api/documents/templates/${activeTab}s`;
       const response = await fetch(endpoint);
@@ -71,7 +66,11 @@ const AIDocuments: React.FC = () => {
     } catch (err) {
       setError('Failed to load templates');
     }
-  };
+  }, [activeTab]);
+
+  useEffect(() => {
+    loadTemplates();
+  }, [loadTemplates]);
 
   const generateDocument = async () => {
     if (!prompt.trim()) {

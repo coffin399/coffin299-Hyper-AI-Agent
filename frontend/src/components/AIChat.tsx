@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Box,
   Card,
@@ -26,7 +26,6 @@ import {
   Drawer,
   InputAdornment,
   Menu,
-  MenuList,
   MenuItem as MenuItemComponent,
   ListItemIcon as MenuItemListItemIcon,
 } from '@mui/material';
@@ -35,11 +34,8 @@ import {
   Add,
   Delete,
   Download,
-  Search,
   MoreVert,
   Refresh,
-  Settings,
-  History,
   Chat,
   SmartToy,
   Person,
@@ -78,40 +74,23 @@ const AIChat: React.FC = () => {
   const [newSessionTitle, setNewSessionTitle] = useState('');
   const [selectedModel, setSelectedModel] = useState('gpt-3.5-turbo');
   const [systemPrompt, setSystemPrompt] = useState('あなたは役立つAIアシスタントです。');
-  const [searchQuery, setSearchQuery] = useState('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    loadSessions();
-    loadModels();
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [currentSession?.messages]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const loadSessions = async () => {
+  const loadSessions = useCallback(async () => {
     try {
       const response = await fetch('/api/chat/sessions');
       const data = await response.json();
       setSessions(data.sessions);
-      if (data.sessions.length > 0 && !currentSession) {
-        setCurrentSession(data.sessions[0]);
-      }
+      setCurrentSession(prev => prev ?? (data.sessions[0] ?? null));
     } catch (err) {
       setError('Failed to load sessions');
     }
-  };
+  }, []);
 
-  const loadModels = async () => {
+  const loadModels = useCallback(async () => {
     try {
       const response = await fetch('/api/chat/models');
       const data = await response.json();
@@ -119,6 +98,19 @@ const AIChat: React.FC = () => {
     } catch (err) {
       setError('Failed to load models');
     }
+  }, []);
+
+  useEffect(() => {
+    loadSessions();
+    loadModels();
+  }, [loadSessions, loadModels]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [currentSession?.messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const createSession = async () => {
@@ -273,21 +265,6 @@ const AIChat: React.FC = () => {
       setAnchorEl(null);
     } catch (err) {
       setError('Failed to export session');
-    }
-  };
-
-  const searchMessages = async () => {
-    if (!currentSession || !searchQuery.trim()) return;
-
-    try {
-      const response = await fetch(
-        `/api/chat/sessions/${currentSession.id}/search?query=${encodeURIComponent(searchQuery)}`
-      );
-      const data = await response.json();
-      // 検索結果をハイライト表示（実装は省略）
-      console.log('Search results:', data.results);
-    } catch (err) {
-      setError('Failed to search messages');
     }
   };
 

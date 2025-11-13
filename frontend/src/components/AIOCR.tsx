@@ -5,35 +5,25 @@ import {
   CardContent,
   Typography,
   Button,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Chip,
-  Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  IconButton,
   Grid,
   LinearProgress,
   Tabs,
   Tab,
-  Paper,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Divider,
-  Switch,
-  FormControlLabel,
   TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Checkbox,
+  FormControlLabel,
+  Paper,
+  Alert,
+  Chip,
+  Switch,
 } from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select';
 import {
+  CloudUpload,
   Upload,
   Image,
   PictureAsPdf,
@@ -376,7 +366,7 @@ const AIOCR: React.FC = () => {
 
       {/* タブ */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tabs value={activeTab} onChange={(_, newValue) => setActiveTab(newValue)}>
+        <Tabs value={activeTab} onChange={(event: React.SyntheticEvent, newValue: number) => setActiveTab(newValue)}>
           <Tab icon={<TextFields />} label="テキスト抽出" />
           <Tab icon={<TableChart />} label="表データ抽出" />
         </Tabs>
@@ -420,7 +410,7 @@ const AIOCR: React.FC = () => {
                       <InputLabel>言語</InputLabel>
                       <Select
                         value={selectedLanguage}
-                        onChange={(e) => setSelectedLanguage(e.target.value)}
+                        onChange={(event: SelectChangeEvent) => setSelectedLanguage(event.target.value)}
                       >
                         {languages.map((lang) => (
                           <MenuItem key={lang.code} value={lang.code}>
@@ -435,7 +425,7 @@ const AIOCR: React.FC = () => {
                       <InputLabel>抽出タイプ</InputLabel>
                       <Select
                         value={extractionType}
-                        onChange={(e) => setExtractionType(e.target.value)}
+                        onChange={(event: SelectChangeEvent) => setExtractionType(event.target.value)}
                       >
                         <MenuItem value="general">一般テキスト</MenuItem>
                         <MenuItem value="invoice">請求書</MenuItem>
@@ -448,7 +438,7 @@ const AIOCR: React.FC = () => {
                       control={
                         <Switch
                           checked={preprocess}
-                          onChange={(e) => setPreprocess(e.target.checked)}
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => setPreprocess(event.target.checked)}
                         />
                       }
                       label="前処理を実行"
@@ -457,7 +447,7 @@ const AIOCR: React.FC = () => {
                       control={
                         <Switch
                           checked={extractStructured}
-                          onChange={(e) => setExtractStructured(e.target.checked)}
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => setExtractStructured(event.target.checked)}
                         />
                       }
                       label="構造化データを抽出"
@@ -578,7 +568,7 @@ const AIOCR: React.FC = () => {
                       <InputLabel>出力フォーマット</InputLabel>
                       <Select
                         value={tableFormat}
-                        onChange={(e) => setTableFormat(e.target.value)}
+                        onChange={(event: SelectChangeEvent) => setTableFormat(event.target.value)}
                       >
                         <MenuItem value="csv">CSV</MenuItem>
                         <MenuItem value="json">JSON</MenuItem>

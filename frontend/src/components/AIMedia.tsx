@@ -11,7 +11,6 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Chip,
   Alert,
   Dialog,
   DialogTitle,
@@ -26,10 +25,6 @@ import {
   LinearProgress,
   Tabs,
   Tab,
-  Paper,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from '@mui/material';
 import {
   Image,
@@ -38,11 +33,7 @@ import {
   Slideshow,
   Add,
   PlayArrow,
-  Download,
-  ExpandMore,
-  Upload,
   Palette,
-  Speed,
   RecordVoiceOver,
 } from '@mui/icons-material';
 
@@ -362,15 +353,6 @@ const AIMedia: React.FC = () => {
       setTemplateDialogOpen(false);
     } catch (err) {
       setError('Failed to generate from template');
-    }
-  };
-
-  const getMediaIcon = (type: string) => {
-    switch (type) {
-      case 'image': return <Image />;
-      case 'video': return <Videocam />;
-      case 'audio': return <Mic />;
-      default: return <Slideshow />;
     }
   };
 

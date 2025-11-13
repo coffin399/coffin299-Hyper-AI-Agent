@@ -7,22 +7,22 @@ Hyper AI Agentは、複数のAIプロバイダーに対応し、RAG（検索拡�
 ## 🎯 主な機能
 
 ### 🤖 AIプロバイダー対応
-- **OpenAI** (GPT-4, GPT-3.5)
-- **Anthropic** (Claude-3)
-- **Google Gemini**
-- **Ollama** (ローカルモデル)
+- **OpenAI** (GPT-4, GPT-3.5, GPT-4o)
+- **Anthropic** (Claude-3 Opus, Sonnet, Haiku)
+- **Google Gemini** (Gemini Pro, Gemini 1.5)
+- **Ollama** (ローカルモデル - Llama3, Qwen, Gemma)
 - 自動フェイルオーバーと負荷分散
 - 会話単位でのモデル切り替え
 
 ### 📱 モバイルアプリ (Android)
-- **React Native** ベースのネイティブアプリ
+- **React Native 0.72.6** ベースのネイティブアプリ
 - **ダッシュボード**: 統計・クイックアクション
 - **AIモデル管理**: GPT-4/Claude/Gemini切り替え
 - **サービス連携**: Google/Discord/LINE設定
 - **AI機能**: ドキュメント/メディア/会議/チャット/OCR
-- **Material Design**: React Native Paper使用
+- **Material Design**: React Native Paper 5.11.1使用
 - **ダークテーマ**: 切換対応
-- **GitHub Actions**: 自動APKビルド
+- **GitHub Actions**: 自動APKビルド (Debug/Release)
 
 ### 🧠 コンテキスト管理
 - 会話履歴の永続化
@@ -33,22 +33,22 @@ Hyper AI Agentは、複数のAIプロバイダーに対応し、RAG（検索拡�
 
 ### 🛠️ ツール統合
 - ファイルシステム操作
-- Webスクレイピング
-- カレンダー管理
-- メール送信
+- Webスクレイピング (Playwright)
+- カレンダー管理 (Google Calendar)
+- メール送信 (SMTP)
 - コード実行 (サンドボックス)
-- データベースクエリ
+- データベースクエリ (SQLite)
 - カスタムツール追加 (プラグイン形式)
 
 ### ⚡ 自動化
-- Cronスケジュール
-- ファイル監視トリガー
+- Cronスケジュール (APScheduler)
+- ファイル監視トリガー (Watchdog)
 - Webhook対応
 - ワークフロー実行
 
 ### 🖥️ ローカルモデル管理
 - PCスペック別モデル推奨
-- Qwen3/Gemma3対応
+- Qwen3/Gemma3/Llama3対応
 - 一括ダウンロード/削除
 - リアルタイム進捗表示
 
@@ -62,20 +62,20 @@ Hyper AI Agentは、複数のAIプロバイダーに対応し、RAG（検索拡�
 ## 🏗️ 技術スタック
 
 ### デスクトップ版
-- **デスクトップ**: Electron (Windows/macOS/Linux)
-- **UI**: React + TypeScript + Material-UI
-- **AIエージェント**: LangChain.js (BYOK)
-- **バックエンド**: Python + FastAPI
-- **データベース**: SQLite (ローカル)
+- **デスクトップ**: Electron 28.0.0 (Windows/macOS/Linux)
+- **UI**: React 18.2.0 + TypeScript 4.9.5 + Material-UI 5.15.0
+- **AIエージェント**: LangChain 0.3.7 (BYOK)
+- **バックエンド**: Python + FastAPI 0.115.0
+- **データベース**: SQLite (ローカル) + SQLAlchemy 2.0.35
 - **通信**: REST API
-- **暗号化**: Fernet (AES 128 + HMAC-SHA256)
+- **暗号化**: Cryptography 43.0.3 (AES 128 + HMAC-SHA256)
 
 ### モバイル版 (Android)
 - **フレームワーク**: React Native 0.72.6
-- **UI**: React Native Paper + Material Design
+- **UI**: React Native Paper 5.11.1 + Material Design
 - **ナビゲーション**: React Navigation 6
-- **アイコン**: React Native Vector Icons
-- **ビルド**: Gradle + GitHub Actions
+- **アイコン**: React Native Vector Icons 10.0.0
+- **ビルド**: Gradle 7.5.1 + GitHub Actions
 - **署名**: Debug/Releaseキーストア
 - **ターゲット**: Android API 21-33
 
@@ -155,6 +155,7 @@ npm run build:android          # リリース版
 - **トリガー**: Push/PR/手動実行
 - **成果物**: Debug APK (30日) / Release APK (90日)
 - **自動リリース**: タグとGitHubリリース作成
+- **ビルドマトリックス**: Ubuntu/Windows/macOS (Electron), Ubuntu (Android)
 
 ## ⚙️ 初期設定
 
@@ -190,6 +191,18 @@ hyper-ai-agent/
 │   ├── core/              # コア機能 (エージェント、DB、設定)
 │   ├── providers/         # AIプロバイダー実装
 │   ├── services/          # サービス層 (会話、メモリ、ツール)
+│   │   ├── automation_service.py
+│   │   ├── calendar_service.py
+│   │   ├── chat_service.py
+│   │   ├── discord_service.py
+│   │   ├── document_service.py
+│   │   ├── email_service.py
+│   │   ├── google_service.py
+│   │   ├── line_service.py
+│   │   ├── media_service.py
+│   │   ├── meeting_service.py
+│   │   ├── ocr_service.py
+│   │   └── ...
 │   ├── tools/             # ツール実装
 │   └── api/               # FastAPIルート
 ├── frontend/              # Reactフロントエンド (デスクトップ)
@@ -204,15 +217,17 @@ hyper-ai-agent/
 │   ├── App.tsx            # モバイルメインアプリ
 │   └── package.json       # React Native依存関係
 ├── .github/workflows/     # CI/CD設定
-│   ├── android-build.yml  # Android APKビルド
-│   └── ...                # その他ワークフロー
+│   └── release.yml        # Android/Electronビルド
 ├── electron.js            # Electronメインプロセス
-└── package.json           # Electron依存関係
+├── preload.js             # Electronプリロードスクリプト
+├── package.json           # Electron依存関係
+├── requirements.txt       # Python依存関係
+└── .env.example           # 環境変数テンプレート
 ```
 
 ## 🔒 セキュリティ
 
-- **APIキー暗号化**: Fernet (AES 128 + HMAC-SHA256) でローカル暗号化
+- **APIキー暗号化**: Cryptography 43.0.3 (AES 128 + HMAC-SHA256) でローカル暗号化
 - **BYOK方式**: ユーザー自身のキーを管理
 - **ローカル処理**: 機密データはローカルDBに保存
 - **サンドボックス**: コード実行は隔離環境
@@ -249,7 +264,7 @@ hyper-ai-agent/
 - クイックアクションで各機能へアクセス
 
 #### AIモデル管理
-- GPT-4、Claude-2、Gemini Proの切り替え
+- GPT-4、Claude-3、Gemini Proの切り替え
 - モデルの有効/無効設定
 
 #### サービス連携
@@ -306,6 +321,7 @@ npm run lint
 - **自動ビルド**: Push/PR/手動実行でAPK生成
 - **成果物**: Debug/Release APKを自動アップロード
 - **リリース**: 手動実行でGitHubリリース作成
+- **マトリックスビルド**: Windows/macOS/Linux (Electron), Ubuntu (Android)
 
 ## 🤝 貢献
 
@@ -325,4 +341,4 @@ MIT License - [LICENSE](LICENSE) を参照
 - [バグ報告](https://github.com/coffin299/coffin299-Hyper-AI-Agent/issues)
 - [機能要望](https://github.com/coffin299/coffin299-Hyper-AI-Agent/discussions)
 - [Releases](https://github.com/coffin299/coffin299-Hyper-AI-Agent/releases)
-- [Android APKビルド](https://github.com/coffin299/coffin299-Hyper-AI-Agent/actions/workflows/android-build.yml)
+- [GitHub Actionsビルド](https://github.com/coffin299/coffin299-Hyper-AI-Agent/actions/workflows/release.yml)
