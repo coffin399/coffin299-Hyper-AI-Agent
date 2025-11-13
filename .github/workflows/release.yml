@@ -56,7 +56,10 @@ jobs:
       - name: Restore Gradle wrapper jar
         run: |
           if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
-            curl -sSfL "https://raw.githubusercontent.com/gradle/gradle/v7.5.1/subprojects/wrapper/src/main/dist/gradle-wrapper.jar" -o gradle/wrapper/gradle-wrapper.jar
+            echo "gradle-wrapper.jar missing; downloading from Gradle distribution"
+            curl -sSfLo /tmp/gradle-7.5.1-bin.zip https://services.gradle.org/distributions/gradle-7.5.1-bin.zip
+            mkdir -p gradle/wrapper
+            unzip -p /tmp/gradle-7.5.1-bin.zip gradle-7.5.1/lib/gradle-wrapper.jar > gradle/wrapper/gradle-wrapper.jar
           fi
 
       - name: Install Python dependencies
