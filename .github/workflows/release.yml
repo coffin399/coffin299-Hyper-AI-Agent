@@ -53,15 +53,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Restore Gradle wrapper jar
+      - name: Restore Gradle wrapper
         run: |
-          if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
-            echo "gradle-wrapper.jar missing; downloading from Gradle distribution"
-            curl -sSfLo /tmp/gradle-7.5.1-bin.zip https://services.gradle.org/distributions/gradle-7.5.1-bin.zip
-            mkdir -p gradle/wrapper
-            unzip -q /tmp/gradle-7.5.1-bin.zip gradle-7.5.1/lib/gradle-wrapper-7.5.1.jar -d /tmp
-            cp /tmp/gradle-7.5.1/lib/gradle-wrapper-7.5.1.jar gradle/wrapper/gradle-wrapper.jar
-          fi
+          curl -sSfL https://services.gradle.org/distributions/gradle-7.5.1-bin.zip -o gradle-7.5.1-bin.zip
+          unzip gradle-7.5.1-bin.zip gradle-7.5.1/lib/plugins/gradle-wrapper-7.5.1.jar
+          cp gradle-7.5.1/lib/plugins/gradle-wrapper-7.5.1.jar mobile/android/gradle/wrapper/gradle-wrapper.jar
+          rm -rf gradle-7.5.1 gradle-7.5.1-bin.zip
 
       - name: Install Python dependencies
         run: |
