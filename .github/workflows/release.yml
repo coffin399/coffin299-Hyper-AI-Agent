@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   build-android:
-    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (github.event.inputs.target == 'android' || github.event.inputs.target == 'both'))
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (inputs.target == 'android' || inputs.target == 'both'))
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -81,7 +81,7 @@ jobs:
           retention-days: 30
 
       - name: Build Release APK
-        if: github.event.inputs.target == 'android' && github.event.inputs.create_release == 'true'
+        if: github.event_name == 'workflow_dispatch' && (inputs.target == 'android' || inputs.target == 'both') && inputs.create_release == 'true'
         run: |
           cd android
           ./gradlew assembleRelease
@@ -92,7 +92,7 @@ jobs:
           MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
 
       - name: Upload Release APK artifact
-        if: github.event.inputs.target == 'android' && github.event.inputs.create_release == 'true'
+        if: github.event_name == 'workflow_dispatch' && (inputs.target == 'android' || inputs.target == 'both') && inputs.create_release == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: android-release-apk
@@ -100,7 +100,7 @@ jobs:
           retention-days: 90
 
   build-electron:
-    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (github.event.inputs.target == 'electron' || github.event.inputs.target == 'both' || github.event.inputs.target == ''))
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (inputs.target == 'electron' || inputs.target == 'both' || inputs.target == ''))
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
