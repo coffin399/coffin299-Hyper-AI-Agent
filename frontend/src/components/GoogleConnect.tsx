@@ -24,7 +24,6 @@ import {
   TableChart,
   Slideshow,
   Folder,
-  Error,
   Launch,
   Refresh,
 } from '@mui/icons-material';
