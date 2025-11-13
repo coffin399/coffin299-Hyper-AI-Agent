@@ -55,11 +55,11 @@ jobs:
 
       - name: Restore Gradle wrapper
         run: |
-          curl -sSfL https://services.gradle.org/distributions/gradle-7.5.1-bin.zip -o gradle-7.5.1-bin.zip
-          unzip gradle-7.5.1-bin.zip gradle-7.5.1/lib/plugins/gradle-wrapper-7.5.1.jar
+          curl -sSfL https://services.gradle.org/distributions/gradle-7.5.1-all.zip -o gradle-7.5.1-all.zip
+          unzip gradle-7.5.1-all.zip gradle-7.5.1/lib/plugins/gradle-wrapper-7.5.1.jar
           mkdir -p mobile/android/gradle/wrapper
           cp gradle-7.5.1/lib/plugins/gradle-wrapper-7.5.1.jar mobile/android/gradle/wrapper/gradle-wrapper.jar
-          rm -rf gradle-7.5.1 gradle-7.5.1-bin.zip
+          rm -rf gradle-7.5.1 gradle-7.5.1-all.zip
 
       - name: Install Python dependencies
         run: |
