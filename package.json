@@ -9,10 +9,11 @@
   },
   "scripts": {
     "dev": "electron .",
-    "build": "electron-builder",
-    "build:win": "electron-builder --win",
-    "build:mac": "electron-builder --mac",
-    "pack": "electron-builder --dir"
+    "build:frontend": "npm --prefix frontend install && npm --prefix frontend run build",
+    "build": "npm run build:frontend && electron-builder",
+    "build:win": "npm run build:frontend && electron-builder --win",
+    "build:mac": "npm run build:frontend && electron-builder --mac",
+    "pack": "npm run build:frontend && electron-builder --dir"
   },
   "build": {
     "appId": "com.coffin299.hyper-ai-agent",

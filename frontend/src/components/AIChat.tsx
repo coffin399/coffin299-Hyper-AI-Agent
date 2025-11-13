@@ -24,8 +24,6 @@ import {
   Grid,
   Paper,
   Drawer,
-  AppBar,
-  Toolbar,
   InputAdornment,
   Menu,
   MenuList,
@@ -326,9 +324,9 @@ const AIChat: React.FC = () => {
           [`& .MuiDrawer-paper`]: { width: 300, boxSizing: 'border-box' },
         }}
       >
-        <Toolbar>
+        <Box sx={{ px: 3, py: 2 }}>
           <Typography variant="h6">AIチャット</Typography>
-        </Toolbar>
+        </Box>
         <Box sx={{ p: 2 }}>
           <Button
             variant="contained"
@@ -378,25 +376,23 @@ const AIChat: React.FC = () => {
 
         {currentSession ? (
           <>
-            {/* ヘッダー */}
-            <AppBar position="static" color="default" elevation={1}>
-              <Toolbar>
-                <Typography variant="h6" sx={{ flex: 1 }}>
-                  {currentSession.title}
-                </Typography>
-                <Chip 
-                  label={getModelName(currentSession.model)} 
-                  size="small" 
-                  sx={{ mr: 1 }}
-                />
-                <IconButton onClick={regenerateResponse} title="応答を再生成">
-                  <Refresh />
-                </IconButton>
-                <IconButton onClick={(e) => handleMenuClick(e, currentSession.id)} title="メニュー">
-                  <MoreVert />
-                </IconButton>
-              </Toolbar>
-            </AppBar>
+            {/* ヘッダー（シンプル表現） */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, px: 3, pt: 2, pb: 1 }}>
+              <Typography variant="h6" sx={{ flex: 1 }}>
+                {currentSession.title}
+              </Typography>
+              <Chip 
+                label={getModelName(currentSession.model)} 
+                size="small" 
+                sx={{ mr: 1 }}
+              />
+              <IconButton onClick={regenerateResponse} title="応答を再生成">
+                <Refresh />
+              </IconButton>
+              <IconButton onClick={(e) => handleMenuClick(e, currentSession.id)} title="メニュー">
+                <MoreVert />
+              </IconButton>
+            </Box>
 
             {/* メッセージエリア */}
             <Box sx={{ flex: 1, overflow: 'auto', p: 2 }}>
