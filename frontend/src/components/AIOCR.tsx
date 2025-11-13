@@ -9,12 +9,10 @@ import {
   LinearProgress,
   Tabs,
   Tab,
-  TextField,
   Select,
   MenuItem,
   FormControl,
   InputLabel,
-  Checkbox,
   FormControlLabel,
   Paper,
   Alert,
@@ -23,7 +21,6 @@ import {
 } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import {
-  CloudUpload,
   Upload,
   Image,
   PictureAsPdf,
@@ -31,10 +28,6 @@ import {
   TextFields,
   TableChart,
   Download,
-  ExpandMore,
-  Settings,
-  Search,
-  Visibility,
 } from '@mui/icons-material';
 
 interface Language {

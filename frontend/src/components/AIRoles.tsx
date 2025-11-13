@@ -34,8 +34,6 @@ import {
   Analytics,
   Business,
   Add,
-  Edit,
-  Delete,
   ExpandMore,
   PlayArrow,
   Star,
