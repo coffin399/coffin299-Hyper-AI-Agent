@@ -59,8 +59,8 @@ jobs:
             echo "gradle-wrapper.jar missing; downloading from Gradle distribution"
             curl -sSfLo /tmp/gradle-7.5.1-bin.zip https://services.gradle.org/distributions/gradle-7.5.1-bin.zip
             mkdir -p gradle/wrapper
-            unzip -q /tmp/gradle-7.5.1-bin.zip gradle-7.5.1/lib/gradle-wrapper.jar -d /tmp
-            cp /tmp/gradle-7.5.1/lib/gradle-wrapper.jar gradle/wrapper/gradle-wrapper.jar
+            unzip -q /tmp/gradle-7.5.1-bin.zip gradle-7.5.1/lib/gradle-wrapper-7.5.1.jar -d /tmp
+            cp /tmp/gradle-7.5.1/lib/gradle-wrapper-7.5.1.jar gradle/wrapper/gradle-wrapper.jar
           fi
 
       - name: Install Python dependencies
