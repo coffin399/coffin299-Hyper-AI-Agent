@@ -61,11 +61,12 @@ jobs:
       - name: Restore Gradle wrapper
         run: |
           curl -sSfL https://services.gradle.org/distributions/gradle-7.5.1-all.zip -o gradle-7.5.1-all.zip
-          unzip gradle-7.5.1-all.zip gradle-7.5.1/lib/plugins/gradle-wrapper-7.5.1.jar gradle-7.5.1/lib/gradle-wrapper-shared-7.5.1.jar
+          unzip gradle-7.5.1-all.zip gradle-7.5.1/lib/plugins/gradle-wrapper-7.5.1.jar gradle-7.5.1/lib/gradle-wrapper-shared-7.5.1.jar gradle-7.5.1/lib/gradle-cli-7.5.1.jar
           mkdir -p android/gradle/wrapper tmp-gradle-wrapper
           cd tmp-gradle-wrapper
           jar xf ../gradle-7.5.1/lib/plugins/gradle-wrapper-7.5.1.jar
           jar xf ../gradle-7.5.1/lib/gradle-wrapper-shared-7.5.1.jar
+          jar xf ../gradle-7.5.1/lib/gradle-cli-7.5.1.jar
           jar cf ../android/gradle/wrapper/gradle-wrapper.jar .
           cd ..
           rm -rf gradle-7.5.1 gradle-7.5.1-all.zip tmp-gradle-wrapper
