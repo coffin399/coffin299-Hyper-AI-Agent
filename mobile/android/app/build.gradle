@@ -45,6 +45,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "com.facebook.react:react-native:0.72.6"
+    implementation("com.facebook.react:react-android:0.72.6")
+    debugImplementation("com.facebook.react:hermes-android:0.72.6")
+    releaseImplementation("com.facebook.react:hermes-android:0.72.6")
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 }

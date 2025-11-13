@@ -809,15 +809,18 @@ const AIMedia: React.FC = () => {
         <DialogContent>
           <List>
             {templates.map((template) => (
-              <ListItem key={template.id} button onClick={() => useTemplate(template)}>
-                <ListItemIcon>
-                  {getMediaIcon(template.type)}
-                </ListItemIcon>
+              <ListItem
+                key={template.id}
+                button
+                onClick={() => {
+                  useTemplate(template);
+                  setTemplateDialogOpen(false);
+                }}
+              >
                 <ListItemText
                   primary={template.name}
                   secondary={template.description}
                 />
-                <Chip label={template.type} size="small" />
               </ListItem>
             ))}
           </List>

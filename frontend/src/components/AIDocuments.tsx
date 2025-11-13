@@ -130,7 +130,7 @@ const AIDocuments: React.FC = () => {
     }
   };
 
-  const useTemplate = async (templateId: string) => {
+  const applyTemplate = async (templateId: string) => {
     try {
       const response = await fetch('/api/documents/generate/from-template', {
         method: 'POST',
@@ -158,10 +158,14 @@ const AIDocuments: React.FC = () => {
       };
 
       setGeneratedDocs(prev => [generatedDoc, ...prev]);
-      setTemplateDialogOpen(false);
     } catch (err) {
       setError('Failed to generate from template');
     }
+  };
+
+  const handleTemplateSelect = (templateId: string) => {
+    setTemplateDialogOpen(false);
+    applyTemplate(templateId);
   };
 
   const getTabIcon = (type: string) => {
@@ -345,7 +349,11 @@ const AIDocuments: React.FC = () => {
         <DialogContent>
           <List>
             {templates.map((template) => (
-              <ListItem key={template.id} button onClick={() => useTemplate(template.id)}>
+              <ListItem
+                key={template.id}
+                button
+                onClick={() => handleTemplateSelect(template.id)}
+              >
                 <ListItemText
                   primary={template.name}
                   secondary={template.description}
