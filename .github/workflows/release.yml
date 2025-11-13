@@ -63,28 +63,28 @@ jobs:
           curl -sSfL https://services.gradle.org/distributions/gradle-7.5.1-all.zip -o gradle-7.5.1-all.zip
           unzip gradle-7.5.1-all.zip gradle-7.5.1/lib/plugins/gradle-wrapper-7.5.1.jar gradle-7.5.1/lib/gradle-wrapper-shared-7.5.1.jar
           python - <<'PY'
-            import contextlib
-            import pathlib
-            import zipfile
+import contextlib
+import pathlib
+import zipfile
 
-            base_dir = pathlib.Path('android/gradle/wrapper')
-            base_dir.mkdir(parents=True, exist_ok=True)
+base_dir = pathlib.Path('android/gradle/wrapper')
+base_dir.mkdir(parents=True, exist_ok=True)
 
-            output_path = base_dir / 'gradle-wrapper.jar'
+output_path = base_dir / 'gradle-wrapper.jar'
 
-            with contextlib.ExitStack() as stack:
-                sources = [
-                    stack.enter_context(zipfile.ZipFile('gradle-7.5.1/lib/plugins/gradle-wrapper-7.5.1.jar')),
-                    stack.enter_context(zipfile.ZipFile('gradle-7.5.1/lib/gradle-wrapper-shared-7.5.1.jar')),
-                ]
-                target = stack.enter_context(zipfile.ZipFile(output_path, 'w'))
+with contextlib.ExitStack() as stack:
+    sources = [
+        stack.enter_context(zipfile.ZipFile('gradle-7.5.1/lib/plugins/gradle-wrapper-7.5.1.jar')),
+        stack.enter_context(zipfile.ZipFile('gradle-7.5.1/lib/gradle-wrapper-shared-7.5.1.jar')),
+    ]
+    target = stack.enter_context(zipfile.ZipFile(output_path, 'w'))
 
-                for source in sources:
-                    for info in source.infolist():
-                        if info.is_dir():
-                            continue
-                        target.writestr(info, source.read(info.filename))
-          PY
+    for source in sources:
+        for info in source.infolist():
+            if info.is_dir():
+                continue
+            target.writestr(info, source.read(info.filename))
+PY
           rm -rf gradle-7.5.1 gradle-7.5.1-all.zip
 
       - name: Install Python dependencies
