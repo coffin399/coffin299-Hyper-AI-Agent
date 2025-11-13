@@ -15,7 +15,6 @@ import {
   LinearProgress,
   Tabs,
   Tab,
-  Paper,
   TextField,
   Switch,
   FormControlLabel,
@@ -38,9 +37,7 @@ import {
   Groups,
   Forum,
   Link,
-  Refresh,
   CheckCircle,
-  Error,
   ExpandMore,
 } from '@mui/icons-material';
 

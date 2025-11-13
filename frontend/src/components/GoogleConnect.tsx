@@ -24,7 +24,6 @@ import {
   TableChart,
   Slideshow,
   Folder,
-  CheckCircle,
   Error,
   Launch,
   Refresh,
@@ -41,7 +40,6 @@ interface GoogleFile {
 
 const GoogleConnect: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authStatus, setAuthStatus] = useState<any>(null);
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [clientConfigText, setClientConfigText] = useState('');
   const [authUrl, setAuthUrl] = useState('');
@@ -58,7 +56,6 @@ const GoogleConnect: React.FC = () => {
     try {
       const response = await fetch('/api/google/auth/status');
       const data = await response.json();
-      setAuthStatus(data);
       setIsAuthenticated(data.authenticated);
     } catch (err) {
       setError('Failed to check auth status');

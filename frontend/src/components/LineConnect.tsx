@@ -14,19 +14,13 @@ import {
   LinearProgress,
   Tabs,
   Tab,
-  Paper,
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Divider,
   TextField,
   Switch,
   FormControlLabel,
   Avatar,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
 } from '@mui/material';
 import {
   Chat,
@@ -38,10 +32,6 @@ import {
   ExpandMore,
   Group,
   CheckCircle,
-  Error,
-  Image,
-  VideoFile,
-  AudioFile,
   Campaign,
 } from '@mui/icons-material';
 
@@ -108,10 +98,6 @@ const LineConnect: React.FC = () => {
   const [useFlex, setUseFlex] = useState(false);
   const [broadcastText, setBroadcastText] = useState('');
 
-  useEffect(() => {
-    checkConnectionStatus();
-  }, []);
-
   const checkConnectionStatus = async () => {
     try {
       const response = await fetch('/api/line/status');
@@ -126,6 +112,11 @@ const LineConnect: React.FC = () => {
       console.error('Failed to check LINE status:', err);
     }
   };
+
+  useEffect(() => {
+    checkConnectionStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const connectToLine = async () => {
     setIsConnecting(true);
@@ -321,10 +312,6 @@ const LineConnect: React.FC = () => {
     } catch (err) {
       console.error('Failed to disconnect:', err);
     }
-  };
-
-  const formatTimestamp = (timestamp: string) => {
-    return new Date(timestamp).toLocaleString('ja-JP');
   };
 
   const getRecipientOptions = () => {

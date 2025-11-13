@@ -16,7 +16,6 @@ import {
   Cloud,
   Description,
   Settings,
-  Palette,
   Person,
   VideoLibrary,
   MeetingRoom,

@@ -333,7 +333,7 @@ npm run lint
 
 ## 📄 ライセンス
 
-MIT License - [LICENSE](LICENSE) を参照
+Apache2.0 License - [LICENSE](LICENSE) を参照
 
 ## 🔗 リンク
 
