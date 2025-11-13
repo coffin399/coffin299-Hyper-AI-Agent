@@ -2,7 +2,7 @@
   "name": "hyper-ai-agent",
   "version": "0.1.0",
   "description": "BYOK multi-provider AI agent with RAG and automation",
-  "main": "dist/main.js",
+  "main": "electron.js",
   "scripts": {
     "dev": "electron .",
     "build": "electron-builder",
@@ -14,6 +14,8 @@
     "appId": "com.coffin299.hyper-ai-agent",
     "productName": "Hyper AI Agent",
     "files": [
+      "electron.js",
+      "preload.js",
       "dist/**/*",
       "node_modules/**/*"
     ],
