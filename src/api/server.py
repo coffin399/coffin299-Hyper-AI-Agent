@@ -11,11 +11,20 @@ from ..core.database import init_db
 from ..services.automation_service import automation_service
 from .routes import (
     automation_router,
+    chat_router,
     conversations_router,
+    discord_router,
+    documents_router,
+    google_router,
+    line_router,
+    meeting_router,
+    media_router,
     memories_router,
     models_router,
+    ocr_router,
     projects_router,
     providers_router,
+    roles_router,
     tools_router,
 )
 
@@ -44,11 +53,20 @@ app.add_middleware(
 )
 
 app.include_router(automation_router)
+app.include_router(chat_router)
 app.include_router(conversations_router)
+app.include_router(discord_router)
+app.include_router(documents_router)
+app.include_router(google_router)
+app.include_router(line_router)
+app.include_router(meeting_router)
+app.include_router(media_router)
 app.include_router(memories_router)
 app.include_router(models_router)
+app.include_router(ocr_router)
 app.include_router(projects_router)
 app.include_router(providers_router)
+app.include_router(roles_router)
 app.include_router(tools_router)
 
 
