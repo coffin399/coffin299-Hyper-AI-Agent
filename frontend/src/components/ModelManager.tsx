@@ -16,7 +16,7 @@ import {
   Download,
   Delete,
   CheckCircle,
-  Error,
+  Error as ErrorIcon,
   ExpandMore,
   ExpandLess,
   Memory,
@@ -260,7 +260,7 @@ const ModelManager: React.FC = () => {
                             </Box>
                             <Box display="flex" alignItems="center" gap={1}>
                               {isDownloaded && <CheckCircle color="success" />}
-                              {progress && progress.startsWith('error') && <Error color="error" />}
+                              {progress && progress.startsWith('error') && <ErrorIcon color="error" />}
                             </Box>
                           </Box>
 
