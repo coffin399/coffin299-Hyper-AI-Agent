@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   build-android:
-    if: (github.event.inputs.target == 'android' || github.event.inputs.target == 'both' || github.event.inputs.target == '') && (github.event_name == 'workflow_dispatch' || github.event_name == 'push')
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (github.event.inputs.target == 'android' || github.event.inputs.target == 'both'))
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -100,7 +100,7 @@ jobs:
           retention-days: 90
 
   build-electron:
-    if: github.event.inputs.target == 'electron' || github.event.inputs.target == 'both' || github.event.inputs.target == ''
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (github.event.inputs.target == 'electron' || github.event.inputs.target == 'both' || github.event.inputs.target == ''))
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
