@@ -323,7 +323,7 @@ const AIMedia: React.FC = () => {
     }
   };
 
-  const useTemplate = async (template: MediaTemplate) => {
+  const applyTemplate = async (template: MediaTemplate) => {
     try {
       const customizations = {
         prompt: template.type === 'audio' ? 'Sample text for audio generation' : 'Sample prompt',
@@ -813,7 +813,7 @@ const AIMedia: React.FC = () => {
                 key={template.id}
                 button
                 onClick={() => {
-                  useTemplate(template);
+                  applyTemplate(template);
                   setTemplateDialogOpen(false);
                 }}
               >
