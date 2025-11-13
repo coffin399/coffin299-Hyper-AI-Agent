@@ -79,7 +79,78 @@ jobs:
           tag_name: ${{ steps.date.outputs.VERSION }}
           name: Release ${{ steps.date.outputs.VERSION }}
           body: |
-            Automated release for ${{ steps.date.outputs.VERSION }}
+            # Hyper AI Agent v${{ steps.date.outputs.VERSION }}
+
+            🚀 BYOK multi-provider AI agent with RAG and automation
+
+            ## 🎯 主な機能
+
+            ### 🤖 AIプロバイダー対応
+            - OpenAI (GPT-4, GPT-3.5)
+            - Anthropic (Claude-3)
+            - Google Gemini
+            - Ollama (ローカルモデル)
+            - 自動フェイルオーバーと負荷分散
+
+            ### 🧠 コンテキスト管理
+            - 会話履歴の永続化
+            - ベクトルメモリ検索 (RAG)
+            - 自動要約機能
+            - セマンティック検索
+
+            ### 🛠️ ツール統合
+            - ファイルシステム操作
+            - Webスクレイピング
+            - カレンダー管理
+            - メール送信
+            - コード実行 (サンドボックス)
+            - データベースクエリ
+
+            ### ⚡ 自動化
+            - Cronスケジュール
+            - ファイル監視トリガー
+            - Webhook対応
+            - ワークフロー実行
+
+            ### 🖥️ ローカルモデル管理
+            - PCスペック別モデル推奨
+            - Qwen3/Gemma3対応
+            - 一括ダウンロード/削除
+            - リアルタイム進捗表示
+
+            ## 📦 インストール
+
+            ### Windows
+            1. `Hyper-AI-Agent-Setup-${{ steps.date.outputs.VERSION }}.exe` をダウンロード
+            2. インストーラーを実行
+            3. アプリケーションを起動
+
+            ### macOS
+            1. `Hyper-AI-Agent-${{ steps.date.outputs.VERSION }}.dmg` をダウンロード
+            2. DMGファイルを開く
+            3. アプリケーションフォルダにドラッグ
+
+            ### Linux
+            1. `Hyper-AI-Agent-${{ steps.date.outputs.VERSION }}.AppImage` をダウンロード
+            2. 実行権限を付与: `chmod +x *.AppImage`
+            3. 実行: `./Hyper-AI-Agent-${{ steps.date.outputs.VERSION }}.AppImage`
+
+            ## ⚙️ 初期設定
+
+            1. APIキーを設定 (OpenAI, Anthropic, Google)
+            2. Ollamaをインストール (ローカルモデル使用の場合)
+            3. プロジェクトを作成して開始
+
+            ## 🔗 リンク
+
+            - ドキュメント: [README](https://github.com/coffin299/coffin299-Hyper-AI-Agent/blob/main/README.md)
+            - バグ報告: [Issues](https://github.com/coffin299/coffin299-Hyper-AI-Agent/issues)
+            - 機能要望: [Discussions](https://github.com/coffin299/coffin299-Hyper-AI-Agent/discussions)
+
+            ---
+
+            🔒 セキュリティ: APIキーはローカルでAES暗号化保存
+            🌈 オープンソース: MITライセンス
           files: |
             release/*.exe
             release/*.dmg
