@@ -1,142 +1,205 @@
 # Hyper AI Agent
 
-A high-performance AI agent framework for advanced task automation and problem-solving.
+🚀 BYOK multi-provider AI agent with RAG and automation
 
-## Features
-- 🚀 High-performance AI agent core
-- 🔄 Task automation and orchestration
-- 🧠 Advanced memory and context management
-- 🤖 Multi-agent collaboration
-- ⚡ Real-time processing
+Hyper AI Agentは、複数のAIプロバイダーに対応し、RAG（検索拡張生成）と自動化機能を統合したデスクトップAIエージェントです。APIキーはローカルでAES暗号化され、セキュアに利用できます。
 
-## Getting Started
+## 🎯 主な機能
 
-### Prerequisites
-- Python 3.9+
-- pip
+### 🤖 AIプロバイダー対応
+- **OpenAI** (GPT-4, GPT-3.5)
+- **Anthropic** (Claude-3)
+- **Google Gemini**
+- **Ollama** (ローカルモデル)
+- 自動フェイルオーバーと負荷分散
+- 会話単位でのモデル切り替え
 
-### Installation
-```bash
-# Clone the repository
-git clone https://github.com/coffin399/coffin299-Hyper-AI-Agent.git
-cd coffin299-Hyper-AI-Agent
-
-# Create and activate virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: .\venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-## Project Structure
-```
-hyper-ai-agent/
-├── src/                    # Source code
-│   ├── core/              # Core agent functionality
-│   ├── memory/            # Memory management
-│   ├── tools/             # Built-in tools
-│   └── utils/             # Utility functions
-├── tests/                 # Test suite
-├── examples/              # Example usage
-└── docs/                  # Documentation
-```
-
-## Technology Stack
-- **Desktop Shell**: Electron for cross-platform Windows/macOS builds
-- **UI Layer**: React + TypeScript
-- **Agent Runtime**: LangChain.js (BYOK—Bring Your Own Key)
-- **Backend Services**: Python + FastAPI for AI processing and orchestration
-- **Local Persistence**: SQLite for encrypted API key storage and long-term memory
-- **IPC / API**: gRPC or REST between Electron renderer and FastAPI backend
-
-### Advantages
-- Unified JavaScript/TypeScript UI with native desktop packaging
-- Consistent UX across Windows and macOS while remaining web-friendly
-- Simple path to bundle user-supplied provider keys securely (BYOK)
-
-## Core Feature Set
-
-### 1. マルチプロバイダー対応
-- OpenAI (GPT-4, GPT-4o)
-- Anthropic (Claude)
-- Google (Gemini)
-- ローカルLLM (Ollama / KoboldCPP 連携)
-- タブ単位でモデル選択・切り替え
-
-### 2. コンテキスト管理システム
-- 長期記憶をSQLiteへベクトル化保存
-- 会話履歴の要約・圧縮
-- 重要情報の自動抽出・タグ付け
+### 🧠 コンテキスト管理
+- 会話履歴の永続化
+- ベクトルメモリ検索 (RAG)
+- 自動要約機能
+- セマンティック検索
 - プロジェクト単位でのコンテキスト分離
 
-### 3. ツール統合（Function Calling）
-```
-├── ファイルシステム操作
-├── Webスクレイピング
-├── カレンダー連携
-├── メール送信
-├── コード実行（サンドボックス内）
-├── データベース操作
-└── カスタムツール追加（プラグイン形式）
-```
+### 🛠️ ツール統合
+- ファイルシステム操作
+- Webスクレイピング
+- カレンダー管理
+- メール送信
+- コード実行 (サンドボックス)
+- データベースクエリ
+- カスタムツール追加 (プラグイン形式)
 
-### 4. ワークフロービルダー
-- ノーコードでタスクフロー設計
-- 条件分岐・ループ処理
-- マルチエージェント連携（例: リサーチャー→ライター→レビュアー）
-
-### 5. RAG（検索拡張生成）
-- PDF / Markdown / Docx の取り込み
-- ベクトル検索によるナレッジベース構築
-- Webページのスクラップ＆保存
-
-### 6. タスク自動化
-- Cronライクな定期実行
+### ⚡ 自動化
+- Cronスケジュール
 - ファイル監視トリガー
-- Webhook受信でエージェント起動
+- Webhook対応
+- ワークフロー実行
 
-### 7. プロンプトテンプレート管理
-- テンプレート化と変数埋め込み
-- コミュニティテンプレートのインポート / エクスポート
+### 🖥️ ローカルモデル管理
+- PCスペック別モデル推奨
+- Qwen3/Gemma3対応
+- 一括ダウンロード/削除
+- リアルタイム進捗表示
 
-### 8. マルチチャット
-- 複数会話スレッドをタブ / サイドバーで並行管理
+### 📊 その他機能
+- マルチチャット (タブ管理)
+- エクスポート (Markdown/PDF/JSON)
+- コスト管理ダッシュボード
+- デバッグモード
+- プロンプトテンプレート管理
 
-### 9. エクスポート機能
-- 会話を Markdown / PDF / JSON へ保存
-- コード部分はシンタックスハイライト対応
+## 🏗️ 技術スタック
 
-### 10. コスト管理ダッシュボード
-- トークン使用量の可視化
-- API別の料金計算
-- 月次レポート生成
+- **デスクトップ**: Electron (Windows/macOS/Linux)
+- **UI**: React + TypeScript + Material-UI
+- **AIエージェント**: LangChain.js (BYOK)
+- **バックエンド**: Python + FastAPI
+- **データベース**: SQLite (ローカル)
+- **通信**: REST API
+- **暗号化**: Fernet (AES 128 + HMAC-SHA256)
 
-### 11. デバッグモード
-- 実送信プロンプトの表示
-- トークン数リアルタイム表示
-- レスポンスタイム計測
+## 📦 インストール
 
-### 12. プラグインシステム
-- JavaScriptでカスタムツールを追加可能
+### プリビルド版 (推奨)
 
-## Implementation Roadmap
+[Releases](https://github.com/coffin299/coffin299-Hyper-AI-Agent/releases) から各プラットフォーム版をダウンロード
 
-### Phase 1 (MVP ~1ヶ月)
-1. 基本チャットUI
-2. マルチプロバイダー対応
-3. APIキー管理（暗号化保存）
-4. 会話履歴の保存
+#### Windows
+1. `Hyper-AI-Agent-Setup-*.exe` をダウンロード
+2. インストーラーを実行
+3. アプリケーションを起動
 
-### Phase 2 (~2-3ヶ月)
-5. ツール統合（ファイル操作 / Web検索）
-6. RAG機能
-7. プロンプトテンプレート
+#### macOS
+1. `Hyper-AI-Agent-*.dmg` をダウンロード
+2. DMGファイルを開く
+3. アプリケーションフォルダにドラッグ
 
-### Phase 3 (~3-6ヶ月)
-8. ワークフロービルダー
-9. タスク自動化
-10. プラグインシステム
+#### Linux
+1. `Hyper-AI-Agent-*.AppImage` をダウンロード
+2. 実行権限を付与: `chmod +x *.AppImage`
+3. 実行: `./Hyper-AI-Agent-*.AppImage`
 
-## License
-Apache 2.0
+### 開発版
+
+```bash
+# リポジトリをクローン
+git clone https://github.com/coffin299/coffin299-Hyper-AI-Agent.git
+cd coffin299-Hyper-AI-Agent
+
+# Python環境設定
+python -m venv venv
+source venv/bin/activate  # Windows: .\venv\Scripts\activate
+pip install -r requirements.txt
+
+# フロントエンド依存関係
+cd frontend
+npm install
+npm run build
+cd ..
+
+# Electron依存関係
+npm install
+
+# 起動
+npm run dev
+```
+
+## ⚙️ 初期設定
+
+1. **APIキー設定**
+   - OpenAI、Anthropic、GoogleのAPIキーを設定
+   - キーはローカルでAES暗号化されて保存
+
+2. **ローカルモデル (オプション)**
+   - Ollamaをインストール
+   - アプリ内で推奨モデルをダウンロード
+
+3. **プロジェクト作成**
+   - 新規プロジェクトを作成して開始
+
+## 📁 プロジェクト構造
+
+```
+hyper-ai-agent/
+├── src/                    # Pythonバックエンド
+│   ├── core/              # コア機能 (エージェント、DB、設定)
+│   ├── providers/         # AIプロバイダー実装
+│   ├── services/          # サービス層 (会話、メモリ、ツール)
+│   ├── tools/             # ツール実装
+│   └── api/               # FastAPIルート
+├── frontend/              # Reactフロントエンド
+│   ├── src/
+│   │   ├── components/    # UIコンポーネント
+│   │   └── App.tsx        # メインアプリ
+│   └── public/
+├── .github/workflows/     # CI/CD設定
+├── electron.js            # Electronメインプロセス
+└── package.json           # Electron依存関係
+```
+
+## 🔒 セキュリティ
+
+- **APIキー暗号化**: Fernet (AES 128 + HMAC-SHA256) でローカル暗号化
+- **BYOK方式**: ユーザー自身のキーを管理
+- **ローカル処理**: 機密データはローカルDBに保存
+- **サンドボックス**: コード実行は隔離環境
+
+## 🚀 使い方
+
+### 基本的なチャット
+1. プロバイダーを選択
+2. メッセージを送信
+3. AI応答を受け取る
+
+### ツール利用
+```
+ファイルを検索してください
+このURLの内容を要約してください
+カレンダーに予定を追加してください
+```
+
+### 自動化設定
+1. 自動化ルールを作成
+2. トリガー (Cron/ファイル監視/Webhook) を設定
+3. アクション (ツール実行) を選択
+
+### ローカルモデル
+1. 設定からシステム情報を確認
+2. 推奨モデルをダウンロード
+3. プロバイダーとして選択
+
+## 🧪 開発
+
+```bash
+# テスト実行
+pytest
+
+# フロントエンド開発サーバー
+cd frontend && npm start
+
+# バックエンド開発サーバー
+python -m uvicorn src.api.server:app --reload
+
+# Electron開発モード
+npm run dev
+```
+
+## 🤝 貢献
+
+1. Fork
+2. ブランチ作成 (`git checkout -b feature/amazing-feature`)
+3. コミット (`git commit -m 'Add amazing feature'`)
+4. Push (`git push origin feature/amazing-feature`)
+5. Pull Request
+
+## 📄 ライセンス
+
+MIT License - [LICENSE](LICENSE) を参照
+
+## 🔗 リンク
+
+- [ドキュメント](https://github.com/coffin299/coffin299-Hyper-AI-Agent/wiki)
+- [バグ報告](https://github.com/coffin299/coffin299-Hyper-AI-Agent/issues)
+- [機能要望](https://github.com/coffin299/coffin299-Hyper-AI-Agent/discussions)
+- [Releases](https://github.com/coffin299/coffin299-Hyper-AI-Agent/releases)
