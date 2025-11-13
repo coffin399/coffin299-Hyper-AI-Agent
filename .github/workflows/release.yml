@@ -107,6 +107,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Get current date (version)
+        id: date
+        run: echo "VERSION=$(date +'%Y.%m.%d')" >> $GITHUB_OUTPUT
+
+      - name: Create and push tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a v${{ steps.date.outputs.VERSION }} -m "Release v${{ steps.date.outputs.VERSION }}"
+          git push origin v${{ steps.date.outputs.VERSION }}
+
       - name: Create or Update Release
         uses: softprops/action-gh-release@v1
         with:
@@ -191,6 +202,5 @@ jobs:
             release/*.AppImage
           draft: false
           prerelease: false
-          overwrite: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
