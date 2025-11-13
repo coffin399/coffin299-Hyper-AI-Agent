@@ -13,6 +13,7 @@ from .routes import (
     automation_router,
     conversations_router,
     memories_router,
+    models_router,
     projects_router,
     providers_router,
     tools_router,
@@ -45,6 +46,7 @@ app.add_middleware(
 app.include_router(automation_router)
 app.include_router(conversations_router)
 app.include_router(memories_router)
+app.include_router(models_router)
 app.include_router(projects_router)
 app.include_router(providers_router)
 app.include_router(tools_router)
