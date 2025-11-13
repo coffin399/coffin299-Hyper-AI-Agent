@@ -36,6 +36,22 @@ jobs:
         if: hashFiles('package.json') != ''
         run: npm ci
 
+      - name: Install frontend dependencies
+        if: hashFiles('frontend/package.json') != ''
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Build frontend
+        if: hashFiles('frontend/package.json') != ''
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Copy frontend build
+        if: hashFiles('frontend/package.json') != ''
+        run: |
+          mkdir -p dist
+          cp -r frontend/build/* dist/
+
       - name: Build Electron app
         if: hashFiles('package.json') != ''
         run: npx electron-builder --${{ matrix.build_target }}
