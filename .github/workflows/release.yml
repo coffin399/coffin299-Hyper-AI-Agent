@@ -59,7 +59,8 @@ jobs:
             echo "gradle-wrapper.jar missing; downloading from Gradle distribution"
             curl -sSfLo /tmp/gradle-7.5.1-bin.zip https://services.gradle.org/distributions/gradle-7.5.1-bin.zip
             mkdir -p gradle/wrapper
-            unzip -p /tmp/gradle-7.5.1-bin.zip gradle-7.5.1/lib/gradle-wrapper-7.5.1.jar > gradle/wrapper/gradle-wrapper.jar
+            unzip -q /tmp/gradle-7.5.1-bin.zip gradle-7.5.1/lib/gradle-wrapper.jar -d /tmp
+            cp /tmp/gradle-7.5.1/lib/gradle-wrapper.jar gradle/wrapper/gradle-wrapper.jar
           fi
 
       - name: Install Python dependencies
@@ -149,6 +150,7 @@ jobs:
         run: echo "VERSION=$(date +'%Y.%m.%d')" >> $GITHUB_OUTPUT
 
       - name: Create and push tag
+        if: matrix.os == 'ubuntu-latest'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -159,6 +161,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create or Update Release
+        if: matrix.os == 'ubuntu-latest'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.date.outputs.VERSION }}
