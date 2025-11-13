@@ -20,6 +20,7 @@
     "files": [
       "electron.js",
       "preload.js",
+      "frontend/build/**/*",
       "dist/**/*",
       "node_modules/**/*"
     ],
