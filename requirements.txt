@@ -11,16 +11,18 @@ httpx>=0.25.2
 pyyaml==6.0.3
 
 # AI / LangChain
-langchain>=0.2.0
-langchain-openai>=0.1.0
-langchain-anthropic>=0.1.0
-langchain-google-genai>=0.1.0
-langchain-ollama>=0.1.0
-openai>=1.6.0
-anthropic>=0.8.0
-google-generativeai>=0.3.2
-sentence-transformers>=2.2.2
-ollama>=0.1.7
+langchain==0.2.16
+langchain-openai==0.1.8
+langchain-anthropic==0.1.11
+langchain-google-genai==0.1.6
+langchain-ollama==0.1.4
+langsmith==0.3.45
+langgraph-sdk==0.2.8
+openai==1.6.1
+anthropic==0.8.0
+google-generativeai==0.3.2
+sentence-transformers==2.2.2
+ollama==0.1.7
 
 # Keystore
 cryptography>=41.0.7
@@ -72,7 +74,7 @@ pydub>=0.25.1
 
 # Misc
 python-multipart>=0.0.6
-tenacity>=8.2.0
+tenacity==8.2.3
 
 # Testing
 pytest>=7.0.0
