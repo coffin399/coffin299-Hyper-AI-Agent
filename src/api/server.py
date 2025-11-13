@@ -1,66 +1,55 @@
-from fastapi import FastAPI, HTTPException, Request
+from __future__ import annotations
+
+import logging
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import Optional
-import uvicorn
-import os
 
-from ..core.agent import HyperAIAgent, AgentConfig
+from ..core.config import get_settings
+from ..core.database import init_db
+from ..services.automation_service import automation_service
+from .routes import (
+    automation_router,
+    conversations_router,
+    memories_router,
+    projects_router,
+    providers_router,
+    tools_router,
+)
 
-app = FastAPI(title="Hyper AI Agent API")
+logger = logging.getLogger(__name__)
+settings = get_settings()
 
-# CORS middleware
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_db()
+    await automation_service.start()
+    logger.info("Application startup complete")
+    yield
+    await automation_service.stop()
+    logger.info("Application shutdown complete")
+
+
+app = FastAPI(title="Hyper AI Agent API", lifespan=lifespan)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Initialize the agent
-agent = HyperAIAgent()
+app.include_router(automation_router)
+app.include_router(conversations_router)
+app.include_router(memories_router)
+app.include_router(projects_router)
+app.include_router(providers_router)
+app.include_router(tools_router)
 
-class MessageRequest(BaseModel):
-    message: str
-    conversation_id: Optional[str] = None
-
-class MessageResponse(BaseModel):
-    response: str
-    conversation_id: str
 
 @app.get("/")
 async def root():
     return {"message": "Welcome to Hyper AI Agent API"}
-
-@app.post("/chat", response_model=MessageResponse)
-async def chat(request: Request, message_request: MessageRequest):
-    """Process a chat message and return the agent's response."""
-    try:
-        # Process the message
-        response = await agent.process_message(message_request.message)
-        
-        # For now, using a simple conversation ID
-        # In a production environment, you'd want to manage conversations properly
-        conversation_id = message_request.conversation_id or "default"
-        
-        return {
-            "response": response,
-            "conversation_id": conversation_id
-        }
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/reset")
-async def reset_conversation():
-    """Reset the conversation history."""
-    agent.reset_conversation()
-    return {"status": "conversation_reset"}
-
-def start_server(host: str = "0.0.0.0", port: int = 8000):
-    """Start the FastAPI server."""
-    uvicorn.run(app, host=host, port=port)
-
-if __name__ == "__main__":
-    start_server()

@@ -1,9 +1,54 @@
-numpy>=1.21.0
-openai>=1.0.0
-python-dotenv>=0.19.0
-pydantic>=2.0.0
-fastapi>=0.95.0
-uvicorn>=0.22.0
+# Core
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-dotenv>=1.0.0
+pydantic>=2.5.0
+sqlalchemy[asyncio]>=2.0.23
+aiosqlite>=0.19.0
+alembic>=1.13.0
+
+# Async utilities
+aiofiles>=23.2.1
+httpx>=0.25.2
+
+# AI / LangChain
+langchain>=0.2.0
+langchain-openai>=0.1.0
+langchain-anthropic>=0.1.0
+langchain-google-genai>=0.1.0
+langchain-ollama>=0.1.0
+openai>=1.6.0
+anthropic>=0.8.0
+google-generativeai>=0.3.2
+sentence-transformers>=2.2.2
+ollama>=0.1.7
+
+# Keystore
+cryptography>=41.0.7
+
+# Scheduling & file watching
+apscheduler>=3.10.4
+watchdog>=3.0.0
+python-crontab>=3.0.0
+
+# Email
+aiosmtplib>=3.0.1
+email-validator>=2.1.0
+
+# Document ingestion
+beautifulsoup4>=4.12.2
+markdown>=3.5.1
+pypdf>=4.0.0
+python-docx>=0.8.11
+
+# Scraping
+playwright>=1.40.0
+lxml>=4.9.3
+
+# Misc
 python-multipart>=0.0.6
+tenacity>=8.2.0
+
+# Testing
 pytest>=7.0.0
 pytest-asyncio>=0.21.0
