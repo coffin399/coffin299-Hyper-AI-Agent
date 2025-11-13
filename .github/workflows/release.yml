@@ -117,8 +117,9 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git tag -a v${{ steps.date.outputs.VERSION }} -m "Release v${{ steps.date.outputs.VERSION }}"
-          git push origin v${{ steps.date.outputs.VERSION }}
+          # Force create and push tag (overwrite existing)
+          git tag -f v${{ steps.date.outputs.VERSION }} -m "Release v${{ steps.date.outputs.VERSION }}"
+          git push origin v${{ steps.date.outputs.VERSION }} --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
