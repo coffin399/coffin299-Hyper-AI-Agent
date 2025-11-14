@@ -39,7 +39,6 @@ python -m nuitka `
     --include-package=langchain_anthropic `
     --include-package=langchain_google_genai `
     --include-package=langchain_ollama `
-    --include-data-dir=src=src `
     --enable-plugin=anti-bloat `
     --assume-yes-for-downloads `
     --show-progress `

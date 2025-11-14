@@ -27,6 +27,9 @@ class ProviderType(str, enum.Enum):
     ANTHROPIC = "anthropic"
     GEMINI = "gemini"
     OLLAMA = "ollama"
+    GROK = "grok"
+    OPENROUTER = "openrouter"
+    NVIDIA_NIM = "nvidia_nim"
 
 
 class ToolType(str, enum.Enum):

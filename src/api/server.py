@@ -21,6 +21,7 @@ from .routes import (
     media_router,
     memories_router,
     models_router,
+    models_list_router,
     ocr_router,
     projects_router,
     providers_router,
@@ -63,6 +64,7 @@ app.include_router(meeting_router)
 app.include_router(media_router)
 app.include_router(memories_router)
 app.include_router(models_router)
+app.include_router(models_list_router)
 app.include_router(ocr_router)
 app.include_router(projects_router)
 app.include_router(providers_router)

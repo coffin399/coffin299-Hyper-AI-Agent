@@ -7,6 +7,89 @@ from typing import List, Optional
 from pydantic import BaseSettings, Field, SecretStr, validator
 
 
+# Available LLM Models (November 2025)
+OPENAI_MODELS = [
+    # GPT-5 Series
+    "gpt-5",
+    "gpt-5.1-instant",
+    "gpt-5.1-thinking",
+    "gpt-5-instant",
+    "gpt-5-thinking",
+    "gpt-5-pro",
+    "gpt-5-nano",
+    "gpt-5-mini",
+    # o-Series (Reasoning Models)
+    "o4-mini",
+    "o3",
+    "o3-mini",
+    # GPT-4 Series
+    "gpt-4.1",
+    "gpt-4o",
+    "gpt-4.5",
+    # Coding Specialized
+    "gpt-5-codex",
+    "gpt-5-codex-mini",
+    # Image Generation
+    "dall-e-2",
+    "dall-e-3",
+]
+
+GEMINI_MODELS = [
+    # Gemini 3 Series (Latest)
+    "gemini-3-pro",
+    # Gemini 2.5 Series
+    "gemini-2.5-pro",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-2.5-flash-native-audio",
+    "gemini-robotics-er-1.5",
+    # Image Generation
+    "nano-banana",  # gemini-2.5-flash-image
+    # Video Generation
+    "veo-3",
+    "veo-3-fast",
+    "veo-3.1",
+    "veo-3.1-fast",
+    # Embedding Models
+    "gemini-embedding-001",
+]
+
+ANTHROPIC_MODELS = [
+    # Claude 4 Series
+    "claude-sonnet-4-5-20250929",
+    "claude-opus-4-1-20250805",
+    "claude-sonnet-4-20250522",
+    "claude-opus-4-20250522",
+    "claude-haiku-4-5-20251015",
+    # Claude 3.7 Series
+    "claude-sonnet-3-7",
+    "claude-haiku-3-5",
+    # Claude 3 Series (Legacy)
+    "claude-3-opus",
+    "claude-3-sonnet",
+    "claude-3-haiku",
+]
+
+GROK_MODELS = [
+    # Grok 4 Series
+    "grok-4",
+    "grok-4-heavy",  # supergrok-heavy
+    "grok-4-fast",
+    # Coding Specialized
+    "grok-code-fast-1",
+    # Grok 3 Series
+    "grok-3",
+    "grok-3-mini",
+    # Grok 2 Series
+    "grok-2",
+    "grok-2-mini",
+    # Grok 1 Series (Legacy)
+    "grok-1",
+    "grok-1.5",
+    "grok-1.5v",
+]
+
+
 class Settings(BaseSettings):
     """Application-level settings loaded from environment variables."""
 
@@ -30,11 +113,18 @@ class Settings(BaseSettings):
     cors_origins: str = "*"
 
     # Default provider model fallbacks
-    default_openai_model: str = "gpt-4o"
-    default_anthropic_model: str = "claude-3-opus-20240229"
-    default_gemini_model: str = "gemini-1.5-pro-latest"
+    default_openai_model: str = "gpt-5"
+    default_anthropic_model: str = "claude-sonnet-4-5-20250929"
+    default_gemini_model: str = "gemini-3-pro"
     default_ollama_model: str = "llama3"
+    default_grok_model: str = "grok-4"
+    default_openrouter_model: str = "anthropic/claude-sonnet-4-5-20250929"
+    default_nvidia_nim_model: str = "meta/llama-3.1-405b-instruct"
+    
+    # Provider base URLs
     ollama_base_url: str = "http://localhost:11434"
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    nvidia_nim_base_url: str = "https://integrate.api.nvidia.com/v1"
 
     # Conversation tuning
     max_context_messages: int = 20

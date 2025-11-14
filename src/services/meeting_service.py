@@ -256,7 +256,7 @@ class MeetingService:
 {chr(10).join([f"- {decision}" for decision in meeting_data.get('decisions', [])])}
 
 ## アクションアイテム
-{chr(10).join([f"- {action.get('description', '')}（担当：{action.get('assignee', ''）}）" for action in meeting_data.get('action_items', [])])}
+{chr(10).join([f"- {action.get('description', '')}（担当：{action.get('assignee', '')}）" for action in meeting_data.get('action_items', [])])}
 
 ## 次回ステップ
 {chr(10).join([f"- {step}" for step in meeting_data.get('next_steps', [])])}

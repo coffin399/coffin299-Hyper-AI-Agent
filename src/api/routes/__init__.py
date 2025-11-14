@@ -5,6 +5,7 @@ from .providers import router as providers_router
 from .conversations import router as conversations_router
 from .memories import router as memories_router
 from .models import router as models_router
+from .models_list import router as models_list_router
 from .projects import router as projects_router
 from .google import router as google_router
 from .documents import router as documents_router
@@ -23,6 +24,7 @@ __all__ = [
     "conversations_router",
     "memories_router",
     "models_router",
+    "models_list_router",
     "projects_router",
     "google_router",
     "documents_router",

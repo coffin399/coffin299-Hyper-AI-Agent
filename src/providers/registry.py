@@ -6,14 +6,20 @@ from ..core.models import ProviderType
 from .anthropic_provider import AnthropicProvider
 from .base import ChatProvider
 from .gemini_provider import GeminiProvider
+from .grok_provider import GrokProvider
+from .nvidia_nim_provider import NvidiaNimProvider
 from .ollama_provider import OllamaProvider
 from .openai_provider import OpenAIProvider
+from .openrouter_provider import OpenRouterProvider
 
 PROVIDER_CLASSES: Dict[ProviderType, Type[ChatProvider]] = {
     ProviderType.OPENAI: OpenAIProvider,
     ProviderType.ANTHROPIC: AnthropicProvider,
     ProviderType.GEMINI: GeminiProvider,
     ProviderType.OLLAMA: OllamaProvider,
+    ProviderType.GROK: GrokProvider,
+    ProviderType.OPENROUTER: OpenRouterProvider,
+    ProviderType.NVIDIA_NIM: NvidiaNimProvider,
 }
 
 
