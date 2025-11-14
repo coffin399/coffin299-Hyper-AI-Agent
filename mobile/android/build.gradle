@@ -9,6 +9,7 @@ buildscript {
         compileSdkVersion = 33
         targetSdkVersion = 33
         ndkVersion = "23.1.7779620"
+        reactNativeVersion = "0.72.6"
     }
     dependencies {
         classpath("com.android.tools.build:gradle:7.3.1")
@@ -26,5 +27,14 @@ allprojects {
         google()
         mavenCentral()
         maven { url "https://www.jitpack.io" }
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            dependencySubstitution {
+                substitute module("com.facebook.react:react-native") with module("com.facebook.react:react-android:" + reactNativeVersion)
+                substitute module("com.facebook.react:react-native:+") with module("com.facebook.react:react-android:" + reactNativeVersion)
+            }
+        }
     }
 }
