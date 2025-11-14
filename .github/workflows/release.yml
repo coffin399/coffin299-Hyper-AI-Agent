@@ -34,6 +34,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo rm -rf ~/.gradle/caches
+          df -h
+
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
@@ -231,10 +239,10 @@ jobs:
           body: |
             # Hyper AI Agent v${{ steps.date.outputs.VERSION }}
 
-            - 🪟 Windows: EXE/Portable
+            - 🪁EWindows: EXE/Portable
             - 🍎 macOS: DMG
             - 🐧 Linux: AppImage, DEB, RPM
-            - 🤖 Android: APK
+            - 🤁EAndroid: APK
           files: |
             artifacts/electron/**/*
             artifacts/android/**/*.apk
@@ -242,3 +250,4 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
