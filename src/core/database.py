@@ -34,7 +34,7 @@ def get_session_factory() -> async_sessionmaker[AsyncSession]:
 
 
 @asynccontextmanager
-def session_scope() -> AsyncIterator[AsyncSession]:
+async def session_scope() -> AsyncIterator[AsyncSession]:
     session = get_session_factory()()
     try:
         yield session
