@@ -1,5 +1,8 @@
 apply plugin: "com.android.application"
 
+def isNewArchitectureEnabled = project.hasProperty("newArchEnabled") ? project.newArchEnabled.toBoolean() : false
+def isHermesEnabled = project.hasProperty("hermesEnabled") ? project.hermesEnabled.toBoolean() : true
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -11,6 +14,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled ? "true" : "false"
+        buildConfigField "boolean", "IS_HERMES_ENABLED", isHermesEnabled ? "true" : "false"
     }
     
     signingConfigs {
@@ -47,7 +52,7 @@ dependencies {
     // React Native dependencies with explicit versions
     implementation("com.facebook.react:react-android:0.72.6")
     
-    if (hermesEnabled.toBoolean()) {
+    if (isHermesEnabled) {
         implementation("com.facebook.react:hermes-android:0.72.6")
     } else {
         implementation("org.webkit:android-jsc:+")
