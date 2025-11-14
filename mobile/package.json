@@ -9,7 +9,8 @@
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "build:android": "cd android && ./gradlew assembleRelease",
-    "build:android:debug": "cd android && ./gradlew assembleDebug"
+    "build:android:debug": "cd android && ./gradlew assembleDebug",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "react": "18.2.0",
@@ -45,4 +46,5 @@
     "preset": "react-native"
   }
 }
+
 
