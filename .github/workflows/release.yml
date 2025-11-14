@@ -160,8 +160,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf release/upload
-          mkdir -p release/upload
+          dest="release/upload"
+          rm -rf "$dest"
+          mkdir -p "$dest"
           shopt -s nullglob
           for file in \
             release/*.AppImage \
@@ -172,13 +173,14 @@ jobs:
             release/builder-*.yml \
             release/app-update*.yml
           do
-            cp "$file" release/upload/
+            base=$(basename "$file")
+            cp "$file" "$dest/linux-$base"
           done
-          if [ -z "$(ls -A release/upload)" ]; then
+          if [ -z "$(ls -A "$dest")" ]; then
             echo "No packaged Linux artifacts found" >&2
             exit 1
           fi
-          ls -al release/upload
+          ls -al "$dest"
 
       - name: Build Electron app (Windows)
         if: matrix.os == 'windows-latest'
@@ -206,7 +208,8 @@ jobs:
           foreach ($pattern in $patterns) {
             $files = Get-ChildItem -Path "release" -Filter $pattern -File -ErrorAction SilentlyContinue
             foreach ($file in $files) {
-              Copy-Item -LiteralPath $file.FullName -Destination $dest -Force
+              $target = Join-Path $dest ("windows-" + $file.Name)
+              Copy-Item -LiteralPath $file.FullName -Destination $target -Force
               $copied = $true
             }
           }
@@ -226,8 +229,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf release/upload
-          mkdir -p release/upload
+          dest="release/upload"
+          rm -rf "$dest"
+          mkdir -p "$dest"
           shopt -s nullglob
           for file in \
             release/*.dmg \
@@ -239,13 +243,14 @@ jobs:
             release/builder-*.yml \
             release/app-update*.yml
           do
-            cp "$file" release/upload/
+            base=$(basename "$file")
+            cp "$file" "$dest/mac-$base"
           done
-          if [ -z "$(ls -A release/upload)" ]; then
+          if [ -z "$(ls -A "$dest")" ]; then
             echo "No packaged macOS artifacts found" >&2
             exit 1
           fi
-          ls -al release/upload
+          ls -al "$dest"
 
       - name: Upload Electron artifacts
         uses: actions/upload-artifact@v4
