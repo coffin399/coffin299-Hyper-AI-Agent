@@ -43,12 +43,14 @@ apply from: file("../../node_modules/@react-native-community/cli-platform-androi
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation("com.facebook.react:react-android")
+    
+    // React Native dependencies with explicit versions
+    implementation("com.facebook.react:react-android:0.72.6")
     
     if (hermesEnabled.toBoolean()) {
-        implementation("com.facebook.react:hermes-android")
+        implementation("com.facebook.react:hermes-android:0.72.6")
     } else {
-        implementation jscFlavor
+        implementation("org.webkit:android-jsc:+")
     }
     
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
