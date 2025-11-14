@@ -7,15 +7,28 @@ function createWindow() {
     height: 800,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
     },
   });
 
+  // Open DevTools in development
+  const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
+  
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
+
   // In development, load the local dev server; in production, load the bundled UI
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.loadURL('http://localhost:3000');
+  if (isDev) {
+    mainWindow.loadURL('http://localhost:3000').catch(() => {
+      console.error('Failed to load dev server. Make sure React dev server is running on port 3000.');
+    });
   } else {
     const indexPath = path.join(__dirname, 'frontend', 'build', 'index.html');
-    mainWindow.loadFile(indexPath);
+    mainWindow.loadFile(indexPath).catch((err) => {
+      console.error('Failed to load index.html:', err);
+    });
   }
 }
 

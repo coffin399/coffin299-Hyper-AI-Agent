@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "electron .",
+    "dev:frontend": "npm --prefix frontend start",
     "build:frontend": "npm --prefix frontend install && npm --prefix frontend run build",
     "build": "npm run build:frontend && electron-builder",
     "build:win": "npm run build:frontend && electron-builder --win",

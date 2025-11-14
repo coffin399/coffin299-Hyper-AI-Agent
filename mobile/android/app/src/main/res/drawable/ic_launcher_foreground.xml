@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Dark circle background -->
+    <path
+        android:fillColor="#1a2332"
+        android:pathData="M54,20 C35.2,20 20,35.2 20,54 C20,72.8 35.2,88 54,88 C72.8,88 88,72.8 88,54 C88,35.2 72.8,20 54,20 Z"/>
+    
+    <!-- Brain icon - left hemisphere (orange gradient) -->
+    <path
+        android:fillColor="#FFB366"
+        android:pathData="M42,38 C38,38 35,41 35,45 C35,46 35.2,47 35.5,48 C33,49 31,51.5 31,54.5 C31,57 32.5,59 34.5,60 C34.2,61 34,62 34,63 C34,67 37,70 41,70 L45,70 C45,70 46,68 47,66 C46,64 45,62 44,60 C42,58 40,56 39,54 C38,52 37,50 37,48 C37,46 38,44 40,43 C41,42 42,41 43,40.5 C42.5,39.5 42,38.8 42,38 Z"/>
+    
+    <!-- Brain icon - right hemisphere (pink/coral gradient) -->
+    <path
+        android:fillColor="#FF8899"
+        android:pathData="M66,38 C70,38 73,41 73,45 C73,46 72.8,47 72.5,48 C75,49 77,51.5 77,54.5 C77,57 75.5,59 73.5,60 C73.8,61 74,62 74,63 C74,67 71,70 67,70 L63,70 C63,70 62,68 61,66 C62,64 63,62 64,60 C66,58 68,56 69,54 C70,52 71,50 71,48 C71,46 70,44 68,43 C67,42 66,41 65,40.5 C65.5,39.5 66,38.8 66,38 Z"/>
+    
+    <!-- Brain stem -->
+    <path
+        android:fillColor="#FF9988"
+        android:pathData="M51,68 L57,68 C57,70 56,72 54,73 C52,72 51,70 51,68 Z"/>
+</vector>
