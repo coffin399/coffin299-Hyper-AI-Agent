@@ -155,11 +155,65 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Collect packaged artifacts (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf release/upload
+          mkdir -p release/upload
+          shopt -s nullglob
+          for file in \
+            release/*.AppImage \
+            release/*.deb \
+            release/*.rpm \
+            release/*linux*.yml \
+            release/latest*.yml \
+            release/builder-*.yml \
+            release/app-update*.yml
+          do
+            cp "$file" release/upload/
+          done
+          if [ -z "$(ls -A release/upload)" ]; then
+            echo "No packaged Linux artifacts found" >&2
+            exit 1
+          fi
+          ls -al release/upload
+
       - name: Build Electron app (Windows)
         if: matrix.os == 'windows-latest'
         run: npm run build -- --win --publish=never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Collect packaged artifacts (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          $dest = Join-Path "release" "upload"
+          if (Test-Path $dest) { Remove-Item -Recurse -Force -Path $dest }
+          New-Item -ItemType Directory -Path $dest | Out-Null
+          $patterns = @(
+            "Hyper AI Agent-*.exe",
+            "Hyper AI Agent Setup*.exe",
+            "*.blockmap",
+            "latest*.yml",
+            "*win*.yml",
+            "builder-*.yml",
+            "app-update*.yml"
+          )
+          $copied = $false
+          foreach ($pattern in $patterns) {
+            $files = Get-ChildItem -Path "release" -Filter $pattern -File -ErrorAction SilentlyContinue
+            foreach ($file in $files) {
+              Copy-Item -LiteralPath $file.FullName -Destination $dest -Force
+              $copied = $true
+            }
+          }
+          if (-not $copied) {
+            throw "No packaged Windows artifacts found"
+          }
+          Get-ChildItem -Path $dest
 
       - name: Build Electron app (macOS)
         if: matrix.os == 'macos-latest'
@@ -167,11 +221,37 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Collect packaged artifacts (macOS)
+        if: matrix.os == 'macos-latest'
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf release/upload
+          mkdir -p release/upload
+          shopt -s nullglob
+          for file in \
+            release/*.dmg \
+            release/*.zip \
+            release/*.pkg \
+            release/*.blockmap \
+            release/*mac*.yml \
+            release/latest*.yml \
+            release/builder-*.yml \
+            release/app-update*.yml
+          do
+            cp "$file" release/upload/
+          done
+          if [ -z "$(ls -A release/upload)" ]; then
+            echo "No packaged macOS artifacts found" >&2
+            exit 1
+          fi
+          ls -al release/upload
+
       - name: Upload Electron artifacts
         uses: actions/upload-artifact@v4
         with:
           name: electron-${{ matrix.os }}
-          path: release/**
+          path: release/upload/**
           retention-days: 14
 
   publish-release:
@@ -246,7 +326,14 @@ jobs:
             - 🐧 Linux: AppImage, DEB, RPM
             - 🤁EAndroid: APK
           files: |
-            artifacts/electron/**/*
+            artifacts/electron/**/*.AppImage
+            artifacts/electron/**/*.deb
+            artifacts/electron/**/*.rpm
+            artifacts/electron/**/*.exe
+            artifacts/electron/**/*.dmg
+            artifacts/electron/**/*.zip
+            artifacts/electron/**/*.blockmap
+            artifacts/electron/**/*.yml
             artifacts/android/**/*.apk
           draft: false
           prerelease: false
