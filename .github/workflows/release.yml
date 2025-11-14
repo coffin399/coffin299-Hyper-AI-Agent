@@ -42,6 +42,12 @@ jobs:
           sudo rm -rf ~/.gradle/caches
           df -h
 
+      - name: Clean workspace caches
+        run: |
+          rm -rf node_modules
+          rm -rf android/.cxx
+          rm -rf android/app/build
+          npm cache clean --force
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
@@ -87,7 +93,7 @@ jobs:
         working-directory: .
 
       - name: Install React Native dependencies
-        run: npm install
+        run: npm ci
 
       - name: Make gradlew executable
         run: |
@@ -201,35 +207,31 @@ jobs:
         with:
           name: electron-ubuntu-latest
           path: artifacts/electron/linux
-          if-no-files-found: ignore
 
       - name: Download Electron artifacts (Windows)
         uses: actions/download-artifact@v4
         with:
           name: electron-windows-latest
           path: artifacts/electron/windows
-          if-no-files-found: ignore
 
       - name: Download Electron artifacts (macOS)
         uses: actions/download-artifact@v4
         with:
           name: electron-macos-latest
           path: artifacts/electron/macos
-          if-no-files-found: ignore
 
       - name: Download Android debug APK
         uses: actions/download-artifact@v4
         with:
           name: android-debug-apk
           path: artifacts/android/debug
-          if-no-files-found: ignore
 
       - name: Download Android release APK
+        if: github.event_name == 'workflow_dispatch' && inputs.create_release == 'true'
         uses: actions/download-artifact@v4
         with:
           name: android-release-apk
           path: artifacts/android/release
-          if-no-files-found: ignore
 
       - name: Create or Update Release
         uses: softprops/action-gh-release@v1
