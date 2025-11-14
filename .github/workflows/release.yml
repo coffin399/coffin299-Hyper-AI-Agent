@@ -160,9 +160,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          dest="release/upload"
-          rm -rf "$dest"
-          mkdir -p "$dest"
+          root_dir="release/upload"
+          temp_dir="$root_dir/linux"
+          zip_path="$root_dir/linux-artifacts.zip"
+          rm -rf "$temp_dir"
+          mkdir -p "$temp_dir"
           shopt -s nullglob
           for file in \
             release/*.AppImage \
@@ -173,14 +175,16 @@ jobs:
             release/builder-*.yml \
             release/app-update*.yml
           do
-            base=$(basename "$file")
-            cp "$file" "$dest/linux-$base"
+            cp "$file" "$temp_dir/"
           done
-          if [ -z "$(ls -A "$dest")" ]; then
+          if [ -z "$(ls -A "$temp_dir")" ]; then
             echo "No packaged Linux artifacts found" >&2
             exit 1
           fi
-          ls -al "$dest"
+          rm -f "$zip_path"
+          (cd "$temp_dir" && zip -rq "$zip_path" .)
+          rm -rf "$temp_dir"
+          ls -al "$root_dir"
 
       - name: Build Electron app (Windows)
         if: matrix.os == 'windows-latest'
@@ -192,7 +196,9 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
-          $dest = Join-Path "release" "upload"
+          $root = "release/upload"
+          if (-not (Test-Path $root)) { New-Item -ItemType Directory -Path $root | Out-Null }
+          $dest = Join-Path $root "windows-temp"
           if (Test-Path $dest) { Remove-Item -Recurse -Force -Path $dest }
           New-Item -ItemType Directory -Path $dest | Out-Null
           $patterns = @(
@@ -208,7 +214,7 @@ jobs:
           foreach ($pattern in $patterns) {
             $files = Get-ChildItem -Path "release" -Filter $pattern -File -ErrorAction SilentlyContinue
             foreach ($file in $files) {
-              $target = Join-Path $dest ("windows-" + $file.Name)
+              $target = Join-Path $dest $file.Name
               Copy-Item -LiteralPath $file.FullName -Destination $target -Force
               $copied = $true
             }
@@ -216,7 +222,11 @@ jobs:
           if (-not $copied) {
             throw "No packaged Windows artifacts found"
           }
-          Get-ChildItem -Path $dest
+          $zipPath = Join-Path $root "windows-artifacts.zip"
+          if (Test-Path $zipPath) { Remove-Item $zipPath }
+          Compress-Archive -Path (Join-Path $dest '*') -DestinationPath $zipPath -Force
+          Remove-Item -Recurse -Force -Path $dest
+          Get-ChildItem -Path $root
 
       - name: Build Electron app (macOS)
         if: matrix.os == 'macos-latest'
@@ -229,9 +239,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          dest="release/upload"
-          rm -rf "$dest"
-          mkdir -p "$dest"
+          root_dir="release/upload"
+          temp_dir="$root_dir/macos"
+          zip_path="$root_dir/macos-artifacts.zip"
+          rm -rf "$temp_dir"
+          mkdir -p "$temp_dir"
           shopt -s nullglob
           for file in \
             release/*.dmg \
@@ -243,20 +255,22 @@ jobs:
             release/builder-*.yml \
             release/app-update*.yml
           do
-            base=$(basename "$file")
-            cp "$file" "$dest/mac-$base"
+            cp "$file" "$temp_dir/"
           done
-          if [ -z "$(ls -A "$dest")" ]; then
+          if [ -z "$(ls -A "$temp_dir")" ]; then
             echo "No packaged macOS artifacts found" >&2
             exit 1
           fi
-          ls -al "$dest"
+          rm -f "$zip_path"
+          (cd "$temp_dir" && zip -rq "$zip_path" .)
+          rm -rf "$temp_dir"
+          ls -al "$root_dir"
 
       - name: Upload Electron artifacts
         uses: actions/upload-artifact@v4
         with:
           name: electron-${{ matrix.os }}
-          path: release/upload/**
+          path: release/upload/*.zip
           retention-days: 14
 
   publish-release:
@@ -331,14 +345,9 @@ jobs:
             - 🐧 Linux: AppImage, DEB, RPM
             - 🤁EAndroid: APK
           files: |
-            artifacts/electron/**/*.AppImage
-            artifacts/electron/**/*.deb
-            artifacts/electron/**/*.rpm
-            artifacts/electron/**/*.exe
-            artifacts/electron/**/*.dmg
-            artifacts/electron/**/*.zip
-            artifacts/electron/**/*.blockmap
-            artifacts/electron/**/*.yml
+            artifacts/electron/linux/*.zip
+            artifacts/electron/macos/*.zip
+            artifacts/electron/windows/*.zip
             artifacts/android/**/*.apk
           draft: false
           prerelease: false

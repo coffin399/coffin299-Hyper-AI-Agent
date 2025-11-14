@@ -1,6 +1,7 @@
 # Core Dependencies
 fastapi==0.115.0
 uvicorn[standard]==0.32.0
+nuitka==2.4.9
 python-dotenv==1.0.1
 pydantic==2.9.0
 sqlalchemy[asyncio]==2.0.35

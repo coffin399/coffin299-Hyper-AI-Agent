@@ -13,6 +13,7 @@ import AIMedia from './components/AIMedia';
 import AIMeeting from './components/AIMeeting';
 import AIChat from './components/AIChat';
 import AIOCR from './components/AIOCR';
+import Settings from './components/Settings';
 import './App.css';
 
 function App() {
@@ -40,6 +41,8 @@ function App() {
         return <AIChat />;
       case 'ocr':
         return <AIOCR />;
+      case 'settings':
+        return <Settings />;
       case 'dashboard':
       default:
         return (
