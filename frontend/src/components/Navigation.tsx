@@ -9,6 +9,8 @@ import {
   ListItemText,
   Typography,
   Divider,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
 import {
   Dashboard,
@@ -23,16 +25,21 @@ import {
   DocumentScanner,
   ChatBubble,
   Message,
+  ChevronLeft,
+  ChevronRight,
 } from '@mui/icons-material';
 
 interface NavigationProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  open: boolean;
+  onToggle: () => void;
 }
 
 const drawerWidth = 240;
+const miniDrawerWidth = 64;
 
-const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
+const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, open, onToggle }) => {
   const menuItems = [
     { id: 'dashboard', label: 'ダッシュボード', icon: <Dashboard /> },
     { id: 'models', label: 'モデル管理', icon: <SmartToy /> },
@@ -52,18 +59,28 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
     <Drawer
       variant="permanent"
       sx={{
-        width: drawerWidth,
+        width: open ? drawerWidth : miniDrawerWidth,
         flexShrink: 0,
+        transition: 'width 0.3s',
         [`& .MuiDrawer-paper`]: {
-          width: drawerWidth,
+          width: open ? drawerWidth : miniDrawerWidth,
           boxSizing: 'border-box',
+          transition: 'width 0.3s',
+          overflowX: 'hidden',
         },
       }}
     >
-      <Box sx={{ p: 2 }}>
-        <Typography variant="h6" color="primary" fontWeight={600}>
-          Hyper AI Agent
-        </Typography>
+      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {open && (
+          <Typography variant="h6" color="primary" fontWeight={600} noWrap>
+            Hyper AI Agent
+          </Typography>
+        )}
+        <Tooltip title={open ? 'サイドバーを最小化' : 'サイドバーを展開'}>
+          <IconButton onClick={onToggle} size="small">
+            {open ? <ChevronLeft /> : <ChevronRight />}
+          </IconButton>
+        </Tooltip>
       </Box>
       
       <Divider />
@@ -87,8 +104,10 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
                 },
               }}
             >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.label} />
+              <ListItemIcon sx={{ minWidth: open ? 56 : 'auto', justifyContent: 'center' }}>
+                {item.icon}
+              </ListItemIcon>
+              {open && <ListItemText primary={item.label} />}
             </ListItemButton>
           </ListItem>
         ))}
@@ -96,11 +115,13 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
       
       <Divider />
       
-      <Box sx={{ p: 2 }}>
-        <Typography variant="caption" color="text.secondary">
-          Version 1.0.0
-        </Typography>
-      </Box>
+      {open && (
+        <Box sx={{ p: 2 }}>
+          <Typography variant="caption" color="text.secondary">
+            Version 1.0.0
+          </Typography>
+        </Box>
+      )}
     </Drawer>
   );
 };

@@ -18,6 +18,7 @@ import './App.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -62,7 +63,12 @@ function App() {
     <ThemeProvider>
       <CssBaseline />
       <Box sx={{ display: 'flex' }}>
-        <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+        <Navigation 
+          activeTab={activeTab} 
+          onTabChange={setActiveTab}
+          open={sidebarOpen}
+          onToggle={() => setSidebarOpen(!sidebarOpen)}
+        />
         <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
           <AppHeader />
           <Box component="main" sx={{ flexGrow: 1 }}>

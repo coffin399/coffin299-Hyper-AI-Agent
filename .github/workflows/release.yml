@@ -159,19 +159,22 @@ jobs:
 
       - name: Build Backend with Nuitka (Windows)
         if: matrix.os == 'windows-latest'
+        timeout-minutes: 60
         run: |
-          python -m nuitka --standalone --onefile --output-dir=dist/backend --output-filename=backend.exe --include-package=src --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
+          python -m nuitka --standalone --onefile --output-dir=dist/backend --output-filename=backend.exe --include-package=src --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --enable-plugin=anti-bloat --assume-yes-for-downloads --show-progress --show-memory --verbose src/main.py
         shell: pwsh
 
       - name: Build Backend with Nuitka (Linux)
         if: matrix.os == 'ubuntu-latest'
+        timeout-minutes: 60
         run: |
-          python -m nuitka --standalone --onefile --output-dir=dist/backend --output-filename=backend --include-package=src --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
+          python -m nuitka --standalone --onefile --output-dir=dist/backend --output-filename=backend --include-package=src --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --enable-plugin=anti-bloat --assume-yes-for-downloads --show-progress --show-memory --verbose src/main.py
 
       - name: Build Backend with Nuitka (macOS)
         if: matrix.os == 'macos-latest'
+        timeout-minutes: 60
         run: |
-          python -m nuitka --standalone --onefile --output-dir=dist/backend --output-filename=backend --include-package=src --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
+          python -m nuitka --standalone --onefile --output-dir=dist/backend --output-filename=backend --include-package=src --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --enable-plugin=anti-bloat --assume-yes-for-downloads --show-progress --show-memory --verbose src/main.py
 
       - name: Install Node dependencies
         run: npm install
