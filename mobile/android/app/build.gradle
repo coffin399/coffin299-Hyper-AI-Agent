@@ -14,12 +14,6 @@ android {
     }
     
     signingConfigs {
-        debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-        }
         release {
             if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
                 storeFile file(MYAPP_UPLOAD_STORE_FILE)
@@ -32,10 +26,12 @@ android {
     
     buildTypes {
         debug {
-            signingConfig signingConfigs.debug
+            // Use default debug signing config
         }
         release {
-            signingConfig signingConfigs.release
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                signingConfig signingConfigs.release
+            }
             def enableProguard = project.hasProperty('enableProguardInReleaseBuilds') ? project.enableProguardInReleaseBuilds : false
             minifyEnabled enableProguard
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -43,10 +39,17 @@ android {
     }
 }
 
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation("com.facebook.react:react-android:0.72.6")
-    debugImplementation("com.facebook.react:hermes-android:0.72.6")
-    releaseImplementation("com.facebook.react:hermes-android:0.72.6")
+    implementation("com.facebook.react:react-android")
+    
+    if (hermesEnabled.toBoolean()) {
+        implementation("com.facebook.react:hermes-android")
+    } else {
+        implementation jscFlavor
+    }
+    
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 }
