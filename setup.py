@@ -27,7 +27,6 @@ build_exe_options = {
         "openai",
         "anthropic",
         "google.generativeai",
-        "sentence_transformers",
         "ollama",
         "cryptography",
         "apscheduler",
@@ -61,9 +60,22 @@ build_exe_options = {
         "test",
         "distutils",
         "setuptools",
+        "numpy.distutils",
+        "numpy.f2py",
+        "matplotlib",
+        "IPython",
+        "jupyter",
+        "notebook",
     ],
     "include_files": [
         # Add any additional files/directories needed at runtime
+    ],
+    "zip_include_packages": [
+        "sentence_transformers",
+        "transformers",
+        "torch",
+        "numpy",
+        "scipy",
     ],
     "optimize": 2,
 }
