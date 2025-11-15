@@ -73,16 +73,22 @@ if [ -d "dist/backend" ]; then
     rm -rf dist/backend
 fi
 
-echo "[INFO] Running PyInstaller (this may take several minutes)..."
-pyinstaller backend.spec --clean --noconfirm
+echo "[INFO] Running Nuitka (this may take 10-30 minutes)..."
+echo "[INFO] Note: First build will be slow as Nuitka downloads dependencies"
+python3 -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --include-package=langchain --include-package=langchain_core --include-package=langchain_community --include-package=langchain_openai --include-package=langchain_anthropic --include-package=langchain_google_genai --include-package=langchain_ollama --include-package=openai --include-package=anthropic --include-package=google.generativeai --include-package=aiofiles --include-package=httpx --include-package=cryptography --include-package=apscheduler --include-package=email_validator --include-package=bs4 --include-package=markdown --include-package=pypdf --include-package=docx --include-package=lxml --include-package=psutil --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
 
-if [ ! -d "dist/backend" ]; then
+# Move backend to dist/backend directory
+if [ -f "dist/backend" ]; then
+    mkdir -p dist/backend_dir
+    mv dist/backend dist/backend_dir/backend
+    chmod +x dist/backend_dir/backend
+    mv dist/backend_dir dist/backend
+    echo "[SUCCESS] Backend built successfully"
+    echo ""
+else
     echo "[ERROR] Backend build output not found"
     exit 1
 fi
-
-echo "[SUCCESS] Backend built successfully"
-echo ""
 
 # Clean up build artifacts to save disk space
 if [ -d "build" ]; then

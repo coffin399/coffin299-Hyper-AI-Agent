@@ -1,13 +1,14 @@
 # Backend Build Guide
 
-This guide explains how to build the Python backend into a standalone executable using PyInstaller.
+This guide explains how to build the Python backend into a standalone executable using Nuitka.
 
 ## Prerequisites
 
 - Python 3.11 or higher
 - All dependencies from `requirements.txt` installed
-- PyInstaller (will be installed automatically by the build script)
+- Nuitka (will be installed automatically by the build script)
 - C compiler (MSVC on Windows, GCC on Linux, Clang on macOS)
+- **Note**: First build will take 10-30 minutes as Nuitka downloads and compiles dependencies
 
 ## Building the Backend
 
@@ -88,10 +89,10 @@ Users can switch between modes in the Settings screen.
 
 ## Troubleshooting
 
-### Build fails with "PyInstaller not found"
-Install PyInstaller manually:
+### Build fails with "Nuitka not found"
+Install Nuitka manually:
 ```bash
-pip install pyinstaller==6.11.1
+pip install nuitka==2.4.9 ordered-set==4.1.0
 ```
 
 ### Build fails with "C compiler not found"
@@ -130,9 +131,9 @@ Example GitHub Actions workflow:
 - name: Build Backend
   run: |
     pip install -r requirements.txt
-    pyinstaller backend.spec --clean --noconfirm
+    python -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend.exe --include-package=fastapi --include-package=uvicorn --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
     mkdir -p dist/backend
-    mv dist/backend dist/backend/backend
+    mv dist/backend.exe dist/backend/backend.exe
     
 - name: Build Electron
   run: |
@@ -142,29 +143,38 @@ Example GitHub Actions workflow:
 
 ## File Size Optimization
 
-The bundled backend executable is large (~200-300MB) because it includes:
+The bundled backend executable is large (~150-250MB) because it includes:
 - Python runtime
 - All dependencies (FastAPI, LangChain, etc.)
 - Native libraries
 
 To reduce size:
-1. Exclude unused packages in `backend.spec` (already configured)
-2. Use `--strip` option (disabled by default to avoid AV false positives)
+1. Use `--enable-plugin=anti-bloat` (already enabled)
+2. Exclude unused packages with `--nofollow-import-to` flags
 3. Use compression (handled by electron-builder)
 
-## Anti-Virus False Positive Mitigation
+## Build Performance
 
-The build configuration includes several strategies to avoid antivirus false positives:
+**First Build**: 10-30 minutes
+- Nuitka downloads C compiler dependencies
+- Compiles all Python packages to C
+- Creates optimized executable
 
-1. **UPX Compression Disabled**: UPX is a major cause of AV false positives
-2. **Symbol Stripping Disabled**: Preserving symbols helps AV scanners analyze the executable
-3. **Minimal Excludes**: Only exclude truly unnecessary packages
-4. **Code Signing** (recommended): Sign your executable with a valid certificate to improve trust
+**Subsequent Builds**: 5-15 minutes
+- Uses cached compiled modules
+- Only recompiles changed code
 
-If you still encounter false positives:
-- Submit the executable to your antivirus vendor for whitelisting
-- Use code signing with an EV (Extended Validation) certificate
-- Add digital signatures and version information to the executable
+## Nuitka vs PyInstaller
+
+**Advantages of Nuitka**:
+- ✅ Better performance (compiled to C)
+- ✅ Smaller executable size
+- ✅ Better compatibility with complex packages
+- ✅ No unpacking at runtime
+
+**Disadvantages**:
+- ⚠️ Longer initial build time
+- ⚠️ Requires C compiler
 
 ## Security Considerations
 

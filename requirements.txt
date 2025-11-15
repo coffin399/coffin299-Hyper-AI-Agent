@@ -1,7 +1,8 @@
 # Core Dependencies
 fastapi==0.115.0
 uvicorn[standard]==0.32.0
-pyinstaller==6.11.1
+nuitka==2.4.9
+ordered-set==4.1.0
 python-dotenv==1.0.1
 pydantic==2.9.0
 sqlalchemy[asyncio]==2.0.35

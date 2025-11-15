@@ -30,7 +30,6 @@ MANIFEST
 # PyInstaller
 *.manifest
 *.spec
-!backend.spec
 
 # Installer logs
 pip-log.txt
@@ -136,6 +135,7 @@ yarn-error.log*
 # Electron
 release/
 dist/
+output/
 
 # IDE
 .vscode/

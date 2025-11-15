@@ -174,31 +174,40 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Build Backend with PyInstaller (Windows)
+      - name: Build Backend with Nuitka (Windows)
         if: matrix.os == 'windows-latest'
-        timeout-minutes: 30
         run: |
-          pyinstaller backend.spec --clean --noconfirm
-          # PyInstaller creates dist/backend/ directory in onedir mode
+          python -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend.exe --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --include-package=langchain --include-package=langchain_core --include-package=langchain_community --include-package=langchain_openai --include-package=langchain_anthropic --include-package=langchain_google_genai --include-package=langchain_ollama --include-package=openai --include-package=anthropic --include-package=google.generativeai --include-package=aiofiles --include-package=httpx --include-package=cryptography --include-package=apscheduler --include-package=email_validator --include-package=bs4 --include-package=markdown --include-package=pypdf --include-package=docx --include-package=lxml --include-package=psutil --enable-plugin=anti-bloat --assume-yes-for-downloads --disable-console --windows-console-mode=attach src/main.py
+          if (Test-Path "dist\backend.exe") {
+            New-Item -ItemType Directory -Force -Path "dist\backend" | Out-Null
+            Move-Item -Path "dist\backend.exe" -Destination "dist\backend\backend.exe" -Force
+          }
         shell: pwsh
 
-      - name: Build Backend with PyInstaller (Linux)
+      - name: Build Backend with Nuitka (Linux)
         if: matrix.os == 'ubuntu-latest'
-        timeout-minutes: 30
         run: |
-          pyinstaller backend.spec --clean --noconfirm
-          # PyInstaller creates dist/backend/ directory in onedir mode
-          # Clean up build artifacts to save disk space
+          python3 -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --include-package=langchain --include-package=langchain_core --include-package=langchain_community --include-package=langchain_openai --include-package=langchain_anthropic --include-package=langchain_google_genai --include-package=langchain_ollama --include-package=openai --include-package=anthropic --include-package=google.generativeai --include-package=aiofiles --include-package=httpx --include-package=cryptography --include-package=apscheduler --include-package=email_validator --include-package=bs4 --include-package=markdown --include-package=pypdf --include-package=docx --include-package=lxml --include-package=psutil --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
+          if [ -f dist/backend ]; then
+            mkdir -p dist/backend_dir
+            mv dist/backend dist/backend_dir/backend
+            chmod +x dist/backend_dir/backend
+            mv dist/backend_dir dist/backend
+          fi
           rm -rf build
-          echo "=== Disk space after PyInstaller build ==="
+          echo "=== Disk space after Nuitka build ==="
           df -h
 
-      - name: Build Backend with PyInstaller (macOS)
+      - name: Build Backend with Nuitka (macOS)
         if: matrix.os == 'macos-latest'
-        timeout-minutes: 30
         run: |
-          pyinstaller backend.spec --clean --noconfirm
-          # PyInstaller creates dist/backend/ directory in onedir mode
+          python3 -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --include-package=langchain --include-package=langchain_core --include-package=langchain_community --include-package=langchain_openai --include-package=langchain_anthropic --include-package=langchain_google_genai --include-package=langchain_ollama --include-package=openai --include-package=anthropic --include-package=google.generativeai --include-package=aiofiles --include-package=httpx --include-package=cryptography --include-package=apscheduler --include-package=email_validator --include-package=bs4 --include-package=markdown --include-package=pypdf --include-package=docx --include-package=lxml --include-package=psutil --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
+          if [ -f dist/backend ]; then
+            mkdir -p dist/backend_dir
+            mv dist/backend dist/backend_dir/backend
+            chmod +x dist/backend_dir/backend
+            mv dist/backend_dir dist/backend
+          fi
 
       - name: Install Node dependencies
         run: npm install --silent

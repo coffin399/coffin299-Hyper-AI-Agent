@@ -72,9 +72,9 @@ After a successful build, you will find the following in the `output` folder:
 Creates an isolated Python environment and installs all required dependencies from `requirements.txt`.
 
 ### Step 2: Backend Build
-Uses PyInstaller to compile the Python backend into a standalone executable bundle in `dist/backend/`.
+Uses Nuitka to compile the Python backend into a standalone executable in `dist/backend/`.
 
-**Note**: This step may take 5-10 minutes depending on your system.
+**Note**: First build may take 10-30 minutes as Nuitka downloads dependencies and compiles to C. Subsequent builds are faster (5-15 minutes).
 
 ### Step 3: Node.js Dependencies
 Installs all Node.js packages required for the frontend and Electron.
@@ -106,10 +106,16 @@ pip install -r requirements.txt
 ```
 
 ### "Backend build failed"
-Ensure you have a C compiler installed:
+Ensure you have a C compiler installed (required for Nuitka):
 - **Windows**: Install Visual Studio Build Tools or MSVC
 - **Linux**: `sudo apt-get install gcc` or `sudo yum install gcc`
 - **macOS**: Install Xcode Command Line Tools: `xcode-select --install`
+
+### Build is very slow
+Nuitka compiles Python to C, which takes time:
+- **First build**: 10-30 minutes (downloads dependencies)
+- **Subsequent builds**: 5-15 minutes (uses cache)
+This is normal and results in better performance.
 
 ### "Electron build failed"
 Check that you have enough disk space (at least 5GB free) and try running:
@@ -132,8 +138,8 @@ venv\Scripts\activate  # Windows
 source venv/bin/activate  # Linux/macOS
 pip install -r requirements.txt
 
-# 2. Build backend
-pyinstaller backend.spec --clean --noconfirm
+# 2. Build backend with Nuitka
+python -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend.exe --include-package=fastapi --include-package=uvicorn --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
 
 # 3. Install Node.js dependencies
 npm install
@@ -163,10 +169,10 @@ Then run the build script again.
 ## Build Configuration
 
 ### Backend Configuration
-Edit `backend.spec` to customize PyInstaller settings:
-- Add/remove packages
-- Change executable name
-- Modify icon or version info
+Edit `scripts/build_backend.ps1` or `scripts/build_backend.sh` to customize Nuitka settings:
+- Add/remove `--include-package` flags
+- Change executable name with `--output-filename`
+- Add optimization flags like `--lto=yes`
 
 ### Frontend Configuration
 Edit `frontend/package.json` and `frontend/public/` to customize the React app.

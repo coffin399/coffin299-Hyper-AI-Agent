@@ -88,22 +88,26 @@ if exist dist\backend (
     rmdir /s /q dist\backend
 )
 
-echo [INFO] Running PyInstaller (this may take several minutes)...
-pyinstaller backend.spec --clean --noconfirm
+echo [INFO] Running Nuitka (this may take 10-30 minutes)...
+echo [INFO] Note: First build will be slow as Nuitka downloads dependencies
+python -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend.exe --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --include-package=langchain --include-package=langchain_core --include-package=langchain_community --include-package=langchain_openai --include-package=langchain_anthropic --include-package=langchain_google_genai --include-package=langchain_ollama --include-package=openai --include-package=anthropic --include-package=google.generativeai --include-package=aiofiles --include-package=httpx --include-package=cryptography --include-package=apscheduler --include-package=email_validator --include-package=bs4 --include-package=markdown --include-package=pypdf --include-package=docx --include-package=lxml --include-package=psutil --enable-plugin=anti-bloat --assume-yes-for-downloads --disable-console --windows-console-mode=attach src/main.py
 if errorlevel 1 (
     echo [ERROR] Backend build failed
     pause
     exit /b 1
 )
 
-if not exist dist\backend (
+REM Move backend.exe to dist/backend directory
+if exist dist\backend.exe (
+    mkdir dist\backend 2>nul
+    move /y dist\backend.exe dist\backend\backend.exe >nul
+    echo [SUCCESS] Backend built successfully
+    echo.
+) else (
     echo [ERROR] Backend build output not found
     pause
     exit /b 1
 )
-
-echo [SUCCESS] Backend built successfully
-echo.
 
 REM Clean up build artifacts to save disk space
 if exist build (
