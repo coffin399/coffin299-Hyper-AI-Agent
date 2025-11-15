@@ -157,38 +157,35 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Build Backend with cx_Freeze (Windows)
+      - name: Build Backend with PyInstaller (Windows)
         if: matrix.os == 'windows-latest'
         timeout-minutes: 30
         run: |
-          python setup.py build_exe
-          if (Test-Path "build/exe.*") {
-            New-Item -ItemType Directory -Force -Path "dist/backend" | Out-Null
-            $exeDir = Get-ChildItem -Path "build" -Filter "exe.*" -Directory | Select-Object -First 1
-            if ($exeDir) {
-              Copy-Item -Path "$($exeDir.FullName)/*" -Destination "dist/backend" -Recurse -Force
-            }
+          pyinstaller backend.spec --clean --noconfirm
+          if (Test-Path "dist\backend.exe") {
+            New-Item -ItemType Directory -Force -Path "dist\backend" | Out-Null
+            Move-Item -Path "dist\backend.exe" -Destination "dist\backend\backend.exe" -Force
           }
         shell: pwsh
 
-      - name: Build Backend with cx_Freeze (Linux)
+      - name: Build Backend with PyInstaller (Linux)
         if: matrix.os == 'ubuntu-latest'
         timeout-minutes: 30
         run: |
-          python setup.py build_exe
+          pyinstaller backend.spec --clean --noconfirm
           mkdir -p dist/backend
-          if [ -d build/exe.* ]; then
-            cp -r build/exe.*/* dist/backend/
+          if [ -f dist/backend ]; then
+            mv dist/backend dist/backend/backend
           fi
 
-      - name: Build Backend with cx_Freeze (macOS)
+      - name: Build Backend with PyInstaller (macOS)
         if: matrix.os == 'macos-latest'
         timeout-minutes: 30
         run: |
-          python setup.py build_exe
+          pyinstaller backend.spec --clean --noconfirm
           mkdir -p dist/backend
-          if [ -d build/exe.* ]; then
-            cp -r build/exe.*/* dist/backend/
+          if [ -f dist/backend ]; then
+            mv dist/backend dist/backend/backend
           fi
 
       - name: Install Node dependencies

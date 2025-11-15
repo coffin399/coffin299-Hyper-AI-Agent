@@ -1,12 +1,12 @@
 # Backend Build Guide
 
-This guide explains how to build the Python backend into a standalone executable using cx_Freeze.
+This guide explains how to build the Python backend into a standalone executable using PyInstaller.
 
 ## Prerequisites
 
 - Python 3.11 or higher
 - All dependencies from `requirements.txt` installed
-- cx_Freeze (will be installed automatically by the build script)
+- PyInstaller (will be installed automatically by the build script)
 - C compiler (MSVC on Windows, GCC on Linux, Clang on macOS)
 
 ## Building the Backend
@@ -88,10 +88,10 @@ Users can switch between modes in the Settings screen.
 
 ## Troubleshooting
 
-### Build fails with "cx_Freeze not found"
-Install cx_Freeze manually:
+### Build fails with "PyInstaller not found"
+Install PyInstaller manually:
 ```bash
-pip install cx-Freeze==7.2.5
+pip install pyinstaller==6.11.1
 ```
 
 ### Build fails with "C compiler not found"
@@ -130,9 +130,9 @@ Example GitHub Actions workflow:
 - name: Build Backend
   run: |
     pip install -r requirements.txt
-    python setup.py build_exe
+    pyinstaller backend.spec --clean --noconfirm
     mkdir -p dist/backend
-    mv build/exe.* dist/backend/
+    mv dist/backend dist/backend/backend
     
 - name: Build Electron
   run: |
@@ -148,9 +148,23 @@ The bundled backend executable is large (~200-300MB) because it includes:
 - Native libraries
 
 To reduce size:
-1. Exclude unused packages in `setup.py` (already configured)
-2. Use optimization level 2 (already enabled)
+1. Exclude unused packages in `backend.spec` (already configured)
+2. Use `--strip` option (disabled by default to avoid AV false positives)
 3. Use compression (handled by electron-builder)
+
+## Anti-Virus False Positive Mitigation
+
+The build configuration includes several strategies to avoid antivirus false positives:
+
+1. **UPX Compression Disabled**: UPX is a major cause of AV false positives
+2. **Symbol Stripping Disabled**: Preserving symbols helps AV scanners analyze the executable
+3. **Minimal Excludes**: Only exclude truly unnecessary packages
+4. **Code Signing** (recommended): Sign your executable with a valid certificate to improve trust
+
+If you still encounter false positives:
+- Submit the executable to your antivirus vendor for whitelisting
+- Use code signing with an EV (Extended Validation) certificate
+- Add digital signatures and version information to the executable
 
 ## Security Considerations
 
