@@ -40,27 +40,27 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         ? {
             // ライトモードのカスタムカラー
             primary: {
-              main: '#1976d2',
+              main: '#667eea',
             },
             secondary: {
-              main: '#dc004e',
+              main: '#764ba2',
             },
             background: {
-              default: '#f5f5f5',
+              default: '#f8f9fa',
               paper: '#ffffff',
             },
           }
         : {
             // ダークモードのカスタムカラー
             primary: {
-              main: '#90caf9',
+              main: '#667eea',
             },
             secondary: {
-              main: '#f48fb1',
+              main: '#764ba2',
             },
             background: {
-              default: '#121212',
-              paper: '#1e1e1e',
+              default: '#0a0a0a',
+              paper: '#1a1a1a',
             },
           }),
     },
@@ -79,19 +79,42 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       MuiCard: {
         styleOverrides: {
           root: {
-            borderRadius: 12,
+            borderRadius: 16,
             boxShadow: mode === 'dark' 
-              ? '0 4px 6px rgba(0, 0, 0, 0.3)'
-              : '0 2px 4px rgba(0, 0, 0, 0.1)',
+              ? '0 8px 32px rgba(0, 0, 0, 0.3)'
+              : '0 8px 32px rgba(0, 0, 0, 0.1)',
+            backdropFilter: 'blur(10px)',
           },
         },
       },
       MuiButton: {
         styleOverrides: {
           root: {
-            borderRadius: 8,
+            borderRadius: 12,
             textTransform: 'none',
             fontWeight: 600,
+            padding: '12px 24px',
+            fontSize: '0.95rem',
+            transition: 'all 0.3s ease',
+          },
+        },
+      },
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            '& .MuiOutlinedInput-root': {
+              borderRadius: 12,
+              transition: 'all 0.3s ease',
+            },
+          },
+        },
+      },
+      MuiDrawer: {
+        styleOverrides: {
+          paper: {
+            borderRight: mode === 'dark' 
+              ? '1px solid rgba(255, 255, 255, 0.1)'
+              : '1px solid rgba(0, 0, 0, 0.1)',
           },
         },
       },

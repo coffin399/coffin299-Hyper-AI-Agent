@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { CssBaseline, Box, Typography } from '@mui/material';
-import AppHeader from './components/AppHeader';
+import { CssBaseline, Box } from '@mui/material';
 import Navigation from './components/Navigation';
+import ModernDashboard from './components/ModernDashboard';
 import ModelManager from './components/ModelManager';
 import GoogleConnect from './components/GoogleConnect';
 import DiscordConnect from './components/DiscordConnect';
 import LineConnect from './components/LineConnect';
+import SlackConnect from './components/SlackConnect';
 import AIDocuments from './components/AIDocuments';
 import AIRoles from './components/AIRoles';
 import AIMedia from './components/AIMedia';
@@ -30,6 +31,8 @@ function App() {
         return <DiscordConnect />;
       case 'line':
         return <LineConnect />;
+      case 'slack':
+        return <SlackConnect />;
       case 'docs':
         return <AIDocuments />;
       case 'roles':
@@ -46,16 +49,7 @@ function App() {
         return <Settings />;
       case 'dashboard':
       default:
-        return (
-          <Box sx={{ p: 3 }}>
-            <Typography variant="h4" gutterBottom>
-              ダッシュボード
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              ようこそ！Hyper AI Agentへ。
-            </Typography>
-          </Box>
-        );
+        return <ModernDashboard />;
     }
   };
 
@@ -70,7 +64,6 @@ function App() {
           onToggle={() => setSidebarOpen(!sidebarOpen)}
         />
         <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-          <AppHeader />
           <Box component="main" sx={{ flexGrow: 1 }}>
             {renderContent()}
           </Box>
