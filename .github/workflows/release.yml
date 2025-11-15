@@ -226,7 +226,9 @@ jobs:
             exit 1
           fi
           rm -f "$zip_path"
-          (cd "$temp_dir" && zip -rq "$zip_path" .)
+          # Use absolute path for zip to avoid path resolution issues
+          abs_zip_path="$(pwd)/$zip_path"
+          (cd "$temp_dir" && zip -rq "$abs_zip_path" .)
           rm -rf "$temp_dir"
           echo "✅ Linux artifacts packaged"
 
@@ -306,7 +308,9 @@ jobs:
             exit 1
           fi
           rm -f "$zip_path"
-          (cd "$temp_dir" && zip -rq "$zip_path" .)
+          # Use absolute path for zip to avoid path resolution issues
+          abs_zip_path="$(pwd)/$zip_path"
+          (cd "$temp_dir" && zip -rq "$abs_zip_path" .)
           rm -rf "$temp_dir"
           echo "✅ macOS artifacts packaged"
 
