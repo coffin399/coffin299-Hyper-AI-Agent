@@ -146,6 +146,16 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Free up disk space (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo apt-get clean
+          df -h
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -162,10 +172,7 @@ jobs:
         timeout-minutes: 30
         run: |
           pyinstaller backend.spec --clean --noconfirm
-          if (Test-Path "dist\backend.exe") {
-            New-Item -ItemType Directory -Force -Path "dist\backend" | Out-Null
-            Move-Item -Path "dist\backend.exe" -Destination "dist\backend\backend.exe" -Force
-          }
+          # PyInstaller creates dist/backend/ directory in onedir mode
         shell: pwsh
 
       - name: Build Backend with PyInstaller (Linux)
@@ -173,22 +180,14 @@ jobs:
         timeout-minutes: 30
         run: |
           pyinstaller backend.spec --clean --noconfirm
-          if [ -f dist/backend ]; then
-            mv dist/backend dist/backend_temp
-            mkdir -p dist/backend
-            mv dist/backend_temp dist/backend/backend
-          fi
+          # PyInstaller creates dist/backend/ directory in onedir mode
 
       - name: Build Backend with PyInstaller (macOS)
         if: matrix.os == 'macos-latest'
         timeout-minutes: 30
         run: |
           pyinstaller backend.spec --clean --noconfirm
-          if [ -f dist/backend ]; then
-            mv dist/backend dist/backend_temp
-            mkdir -p dist/backend
-            mv dist/backend_temp dist/backend/backend
-          fi
+          # PyInstaller creates dist/backend/ directory in onedir mode
 
       - name: Install Node dependencies
         run: npm install --silent

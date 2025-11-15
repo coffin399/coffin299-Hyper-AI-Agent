@@ -69,10 +69,8 @@ pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
     [],
+    exclude_binaries=True,  # Use onedir mode to reduce build disk usage
     name='backend',
     debug=False,
     bootloader_ignore_signals=False,
@@ -89,4 +87,15 @@ exe = EXE(
     # Anti-virus false positive mitigation
     icon=None,  # Add custom icon if available
     version=None,  # Add version info if available
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=False,
+    upx_exclude=[],
+    name='backend',
 )

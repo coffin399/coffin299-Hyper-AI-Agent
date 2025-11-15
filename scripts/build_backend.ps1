@@ -32,24 +32,22 @@ Write-Host "Compiling backend (this may take a few minutes)..." -ForegroundColor
 pyinstaller backend.spec --clean --noconfirm
 
 if ($LASTEXITCODE -eq 0) {
-    # Move build output to desired location
-    if (Test-Path $OutputDir) {
-        Remove-Item -Recurse -Force $OutputDir
-    }
-    New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
-    
-    # PyInstaller creates backend.exe in dist/
-    if (Test-Path "dist\backend.exe") {
-        Copy-Item -Path "dist\backend.exe" -Destination "$OutputDir\backend.exe" -Force
-        Write-Host "`nBuild successful! Backend executable created at: $OutputDir\backend.exe" -ForegroundColor Green
+    # PyInstaller creates backend directory in dist/ (onedir mode)
+    if (Test-Path "dist\backend" -PathType Container) {
+        # If OUTPUT_DIR is default (dist/backend), it's already in the right place
+        if ($OutputDir -ne "dist\backend") {
+            # For custom output dirs, copy the entire directory
+            if (Test-Path $OutputDir) {
+                Remove-Item -Recurse -Force $OutputDir
+            }
+            Copy-Item -Path "dist\backend" -Destination $OutputDir -Recurse -Force
+        }
+        
+        Write-Host "`nBuild successful! Backend bundle created at: $OutputDir\" -ForegroundColor Green
         Write-Host "Note: UPX compression is disabled to avoid antivirus false positives." -ForegroundColor Yellow
         Write-Host "You can now bundle this with your Electron app." -ForegroundColor Green
-    } elseif (Test-Path "dist\backend") {
-        Copy-Item -Path "dist\backend" -Destination "$OutputDir\backend" -Force
-        Write-Host "`nBuild successful! Backend executable created at: $OutputDir\backend" -ForegroundColor Green
-        Write-Host "You can now bundle this with your Electron app." -ForegroundColor Green
     } else {
-        Write-Host "`nBuild failed: No backend executable found in dist/" -ForegroundColor Red
+        Write-Host "`nBuild failed: No backend directory found in dist/" -ForegroundColor Red
         exit 1
     }
 } else {
