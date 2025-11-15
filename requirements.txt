@@ -70,6 +70,9 @@ discord-webhook
 line-bot-sdk
 requests
 
+# Slack API
+slack-sdk
+
 # OCR & Document Processing
 pytesseract==0.3.13
 Pillow==11.0.0

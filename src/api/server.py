@@ -26,6 +26,7 @@ from .routes import (
     projects_router,
     providers_router,
     roles_router,
+    slack_router,
     tools_router,
 )
 
@@ -69,6 +70,7 @@ app.include_router(ocr_router)
 app.include_router(projects_router)
 app.include_router(providers_router)
 app.include_router(roles_router)
+app.include_router(slack_router)
 app.include_router(tools_router)
 
 
