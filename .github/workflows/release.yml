@@ -149,11 +149,18 @@ jobs:
       - name: Free up disk space (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: |
+          echo "=== Before cleanup ==="
+          df -h
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/share/boost
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/swift
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force
           sudo apt-get clean
+          echo "=== After cleanup ==="
           df -h
 
       - name: Setup Python
@@ -181,6 +188,10 @@ jobs:
         run: |
           pyinstaller backend.spec --clean --noconfirm
           # PyInstaller creates dist/backend/ directory in onedir mode
+          # Clean up build artifacts to save disk space
+          rm -rf build
+          echo "=== Disk space after PyInstaller build ==="
+          df -h
 
       - name: Build Backend with PyInstaller (macOS)
         if: matrix.os == 'macos-latest'
@@ -192,9 +203,22 @@ jobs:
       - name: Install Node dependencies
         run: npm install --silent
 
+      - name: Clean up node_modules (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          echo "=== Disk space before cleanup ==="
+          df -h
+          # Keep only production dependencies
+          npm prune --production
+          echo "=== Disk space after cleanup ==="
+          df -h
+
       - name: Build Electron app (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: npm run build -- --linux --publish=never
+        run: |
+          # Reinstall all dependencies for build
+          npm install --silent
+          npm run build -- --linux --publish=never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
