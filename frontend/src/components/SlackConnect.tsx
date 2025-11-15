@@ -17,12 +17,24 @@ import {
   Divider,
 } from '@mui/material';
 import {
-  Chat as SlackIcon,
   CheckCircle,
   Error,
   Link,
   Notifications,
 } from '@mui/icons-material';
+
+// Slack Logo Component
+const SlackLogo: React.FC<{ sx?: any }> = ({ sx }) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    style={sx}
+  >
+    <path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.527 2.527 0 0 1 6.313 24a2.527 2.527 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.527 2.527 0 0 1-2.521-2.52A2.527 2.527 0 0 1 8.834 0a2.527 2.527 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.527 2.527 0 0 1 2.521 2.521 2.527 2.527 0 0 1-2.521 2.521H2.522A2.527 2.527 0 0 1 0 8.834a2.527 2.527 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521 2.528 2.528 0 0 1 2.522 2.521 2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.522 2.521 2.527 2.527 0 0 1-2.521-2.521V2.522A2.527 2.527 0 0 1 15.166 0a2.528 2.528 0 0 1 2.522 2.522v6.312zM15.166 18.956a2.528 2.528 0 0 1 2.522 2.522 2.528 2.528 0 0 1-2.522 2.522 2.527 2.527 0 0 1-2.521-2.522v-2.522h2.521zM15.166 17.688a2.527 2.527 0 0 1-2.521-2.522 2.528 2.528 0 0 1 2.521-2.522h6.313a2.528 2.528 0 0 1 2.522 2.522 2.527 2.527 0 0 1-2.522 2.521h-6.313z"/>
+  </svg>
+);
 
 interface SlackConnectProps {
   onConnect?: () => void;
@@ -83,7 +95,7 @@ const SlackConnect: React.FC<SlackConnectProps> = ({ onConnect, onDisconnect }) 
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <SlackIcon sx={{ fontSize: 32, mr: 2, color: '#4A154B' }} />
+            <SlackLogo sx={{ fontSize: 32, mr: 2, color: '#4A154B' }} />
             <Box>
               <Typography variant="h6" fontWeight={600}>
                 Slack Integration
