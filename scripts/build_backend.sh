@@ -29,15 +29,22 @@ echo "Compiling backend (this may take a few minutes)..."
 pyinstaller backend.spec --clean --noconfirm
 
 if [ $? -eq 0 ]; then
-    # Move build output to desired location
-    if [ -d "$OUTPUT_DIR" ]; then
-        rm -rf "$OUTPUT_DIR"
-    fi
-    mkdir -p "$OUTPUT_DIR"
-    
-    # PyInstaller creates backend in dist/
+    # PyInstaller creates backend executable in dist/
     if [ -f "dist/backend" ]; then
-        cp "dist/backend" "$OUTPUT_DIR/backend"
+        # Create output directory if it doesn't exist
+        mkdir -p "$(dirname "$OUTPUT_DIR")"
+        
+        # If OUTPUT_DIR is default (dist/backend), rename the file to backend_temp first
+        if [ "$OUTPUT_DIR" = "dist/backend" ]; then
+            mv "dist/backend" "dist/backend_temp"
+            mkdir -p "$OUTPUT_DIR"
+            mv "dist/backend_temp" "$OUTPUT_DIR/backend"
+        else
+            # For custom output dirs, just copy
+            mkdir -p "$OUTPUT_DIR"
+            cp "dist/backend" "$OUTPUT_DIR/backend"
+        fi
+        
         echo ""
         echo "Build successful! Backend executable created at: $OUTPUT_DIR/backend"
         echo "Note: UPX compression is disabled to avoid antivirus false positives."

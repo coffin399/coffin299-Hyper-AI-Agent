@@ -173,9 +173,10 @@ jobs:
         timeout-minutes: 30
         run: |
           pyinstaller backend.spec --clean --noconfirm
-          mkdir -p dist/backend
           if [ -f dist/backend ]; then
-            mv dist/backend dist/backend/backend
+            mv dist/backend dist/backend_temp
+            mkdir -p dist/backend
+            mv dist/backend_temp dist/backend/backend
           fi
 
       - name: Build Backend with PyInstaller (macOS)
@@ -183,9 +184,10 @@ jobs:
         timeout-minutes: 30
         run: |
           pyinstaller backend.spec --clean --noconfirm
-          mkdir -p dist/backend
           if [ -f dist/backend ]; then
-            mv dist/backend dist/backend/backend
+            mv dist/backend dist/backend_temp
+            mkdir -p dist/backend
+            mv dist/backend_temp dist/backend/backend
           fi
 
       - name: Install Node dependencies
