@@ -1,53 +1,48 @@
-# Nuitka Build Script for Backend
-# This script compiles the Python backend into a standalone executable using Nuitka
+# cx_Freeze Build Script for Backend
+# This script compiles the Python backend into a standalone executable using cx_Freeze
 
 param(
     [string]$OutputDir = "dist/backend",
     [string]$PythonVersion = "3.11"
 )
 
-Write-Host "Building Hyper AI Agent Backend with Nuitka..." -ForegroundColor Green
+Write-Host "Building Hyper AI Agent Backend with cx_Freeze..." -ForegroundColor Green
 
-# Check if Nuitka is installed
+# Check if cx_Freeze is installed
 try {
-    python -m nuitka --version | Out-Null
+    python -c "import cx_Freeze" 2>$null
+    if ($LASTEXITCODE -ne 0) { throw }
 } catch {
-    Write-Host "Nuitka not found. Installing..." -ForegroundColor Yellow
-    pip install nuitka==2.4.9
+    Write-Host "cx_Freeze not found. Installing..." -ForegroundColor Yellow
+    pip install cx-Freeze==7.2.5
 }
 
-# Create output directory
-New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
+# Clean previous build
+if (Test-Path "build") {
+    Remove-Item -Recurse -Force "build"
+}
 
-# Build with Nuitka
+# Build with cx_Freeze
 Write-Host "Compiling backend..." -ForegroundColor Cyan
 
-python -m nuitka `
-    --standalone `
-    --onefile `
-    --output-dir=$OutputDir `
-    --output-filename=backend.exe `
-    --include-package=src `
-    --include-package=fastapi `
-    --include-package=uvicorn `
-    --include-package=pydantic `
-    --include-package=sqlalchemy `
-    --include-package=langchain `
-    --include-package=langchain_core `
-    --include-package=langchain_community `
-    --include-package=langchain_openai `
-    --include-package=langchain_anthropic `
-    --include-package=langchain_google_genai `
-    --include-package=langchain_ollama `
-    --enable-plugin=anti-bloat `
-    --assume-yes-for-downloads `
-    --show-progress `
-    --show-memory `
-    src/main.py
+python setup.py build_exe
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "`nBuild successful! Backend executable created at: $OutputDir/backend.exe" -ForegroundColor Green
-    Write-Host "You can now bundle this with your Electron app." -ForegroundColor Green
+    # Move build output to desired location
+    if (Test-Path $OutputDir) {
+        Remove-Item -Recurse -Force $OutputDir
+    }
+    New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
+    
+    $exeDir = Get-ChildItem -Path "build" -Filter "exe.*" -Directory | Select-Object -First 1
+    if ($exeDir) {
+        Copy-Item -Path "$($exeDir.FullName)\*" -Destination $OutputDir -Recurse -Force
+        Write-Host "`nBuild successful! Backend executable created in: $OutputDir" -ForegroundColor Green
+        Write-Host "You can now bundle this with your Electron app." -ForegroundColor Green
+    } else {
+        Write-Host "`nBuild failed: No exe.* directory found in build/" -ForegroundColor Red
+        exit 1
+    }
 } else {
     Write-Host "`nBuild failed with exit code $LASTEXITCODE" -ForegroundColor Red
     exit $LASTEXITCODE

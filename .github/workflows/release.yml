@@ -157,24 +157,39 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Build Backend with Nuitka (Windows)
+      - name: Build Backend with cx_Freeze (Windows)
         if: matrix.os == 'windows-latest'
-        timeout-minutes: 60
+        timeout-minutes: 30
         run: |
-          python -m nuitka --standalone --onefile --output-dir=dist/backend --output-filename=backend.exe --include-package=src --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
+          python setup.py build_exe
+          if (Test-Path "build/exe.*") {
+            New-Item -ItemType Directory -Force -Path "dist/backend" | Out-Null
+            $exeDir = Get-ChildItem -Path "build" -Filter "exe.*" -Directory | Select-Object -First 1
+            if ($exeDir) {
+              Copy-Item -Path "$($exeDir.FullName)/*" -Destination "dist/backend" -Recurse -Force
+            }
+          }
         shell: pwsh
 
-      - name: Build Backend with Nuitka (Linux)
+      - name: Build Backend with cx_Freeze (Linux)
         if: matrix.os == 'ubuntu-latest'
-        timeout-minutes: 60
+        timeout-minutes: 30
         run: |
-          python -m nuitka --standalone --onefile --output-dir=dist/backend --output-filename=backend --include-package=src --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
+          python setup.py build_exe
+          mkdir -p dist/backend
+          if [ -d build/exe.* ]; then
+            cp -r build/exe.*/* dist/backend/
+          fi
 
-      - name: Build Backend with Nuitka (macOS)
+      - name: Build Backend with cx_Freeze (macOS)
         if: matrix.os == 'macos-latest'
-        timeout-minutes: 60
+        timeout-minutes: 30
         run: |
-          python -m nuitka --standalone --onefile --output-dir=dist/backend --output-filename=backend --include-package=src --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
+          python setup.py build_exe
+          mkdir -p dist/backend
+          if [ -d build/exe.* ]; then
+            cp -r build/exe.*/* dist/backend/
+          fi
 
       - name: Install Node dependencies
         run: npm install --silent

@@ -1,12 +1,12 @@
 # Backend Build Guide
 
-This guide explains how to build the Python backend into a standalone executable using Nuitka.
+This guide explains how to build the Python backend into a standalone executable using cx_Freeze.
 
 ## Prerequisites
 
 - Python 3.11 or higher
 - All dependencies from `requirements.txt` installed
-- Nuitka (will be installed automatically by the build script)
+- cx_Freeze (will be installed automatically by the build script)
 - C compiler (MSVC on Windows, GCC on Linux, Clang on macOS)
 
 ## Building the Backend
@@ -88,10 +88,10 @@ Users can switch between modes in the Settings screen.
 
 ## Troubleshooting
 
-### Build fails with "Nuitka not found"
-Install Nuitka manually:
+### Build fails with "cx_Freeze not found"
+Install cx_Freeze manually:
 ```bash
-pip install nuitka==2.4.9
+pip install cx-Freeze==7.2.5
 ```
 
 ### Build fails with "C compiler not found"
@@ -130,7 +130,9 @@ Example GitHub Actions workflow:
 - name: Build Backend
   run: |
     pip install -r requirements.txt
-    python -m nuitka --standalone --onefile src/main.py
+    python setup.py build_exe
+    mkdir -p dist/backend
+    mv build/exe.* dist/backend/
     
 - name: Build Electron
   run: |
@@ -146,8 +148,8 @@ The bundled backend executable is large (~200-300MB) because it includes:
 - Native libraries
 
 To reduce size:
-1. Use `--enable-plugin=anti-bloat` (already enabled)
-2. Exclude unused packages
+1. Exclude unused packages in `setup.py` (already configured)
+2. Use optimization level 2 (already enabled)
 3. Use compression (handled by electron-builder)
 
 ## Security Considerations

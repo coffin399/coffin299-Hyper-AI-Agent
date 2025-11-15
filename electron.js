@@ -44,7 +44,9 @@ function startBackend() {
   }
 
   return new Promise((resolve, reject) => {
-    const backendExe = path.join(__dirname, 'dist', 'backend', 'backend.exe');
+    // Platform-specific executable name
+    const exeName = process.platform === 'win32' ? 'backend.exe' : 'backend';
+    const backendExe = path.join(__dirname, 'dist', 'backend', exeName);
     
     if (!fs.existsSync(backendExe)) {
       console.error('Backend executable not found at:', backendExe);
