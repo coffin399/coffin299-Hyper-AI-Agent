@@ -91,7 +91,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, open, o
     { id: 'roles', label: 'AIロール', icon: <Person /> },
     { id: 'media', label: 'AIメディア', icon: <VideoLibrary /> },
     { id: 'meeting', label: 'AI会議', icon: <MeetingRoom /> },
-    { id: 'chat', label: 'AIチャット', icon: <Chat /> },
+    { id: 'chat', label: 'AIチャット', icon: <ChatBubble /> },
     { id: 'ocr', label: 'AI OCR', icon: <DocumentScanner /> },
     { id: 'settings', label: '設定', icon: <Settings /> },
   ];
