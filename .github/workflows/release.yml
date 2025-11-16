@@ -194,6 +194,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
+      - name: Restore cached backend executable
+        id: cache-backend
+        uses: actions/cache@v4
+        with:
+          path: dist/backend
+          key: ${{ runner.os }}-backend-${{ hashFiles('requirements.txt', 'src/**/*.py') }}
+          restore-keys: |
+            ${{ runner.os }}-backend-
+
       - name: Cache Nuitka compilation cache
         uses: actions/cache@v4
         with:
@@ -203,7 +212,7 @@ jobs:
             ${{ runner.os }}-nuitka-
             
       - name: Build Backend with Nuitka (Windows)
-        if: github.event_name == 'workflow_dispatch' && inputs.build_backend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'windows') && matrix.os == 'windows-latest'
+        if: github.event_name == 'workflow_dispatch' && inputs.build_backend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'windows') && matrix.os == 'windows-latest' && steps.cache-backend.outputs.cache-hit != 'true'
         run: |
           python -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend.exe --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --include-package=langchain --include-package=langchain_core --include-package=langchain_community --include-package=langchain_openai --include-package=langchain_anthropic --include-package=langchain_google_genai --include-package=langchain_ollama --include-package=openai --include-package=anthropic --include-package=google.generativeai --include-package=aiofiles --include-package=httpx --include-package=cryptography --include-package=apscheduler --include-package=email_validator --include-package=bs4 --include-package=markdown --include-package=pypdf --include-package=docx --include-package=lxml --include-package=psutil --enable-plugin=anti-bloat --assume-yes-for-downloads --disable-console --windows-console-mode=attach src/main.py
           if (Test-Path "dist\backend.exe") {
@@ -213,7 +222,7 @@ jobs:
         shell: pwsh
 
       - name: Build Backend with Nuitka (Linux)
-        if: github.event_name == 'workflow_dispatch' && inputs.build_backend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'linux') && matrix.os == 'ubuntu-latest'
+        if: github.event_name == 'workflow_dispatch' && inputs.build_backend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'linux') && matrix.os == 'ubuntu-latest' && steps.cache-backend.outputs.cache-hit != 'true'
         run: |
           python3 -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --include-package=langchain --include-package=langchain_core --include-package=langchain_community --include-package=langchain_openai --include-package=langchain_anthropic --include-package=langchain_google_genai --include-package=langchain_ollama --include-package=openai --include-package=anthropic --include-package=google.generativeai --include-package=aiofiles --include-package=httpx --include-package=cryptography --include-package=apscheduler --include-package=email_validator --include-package=bs4 --include-package=markdown --include-package=pypdf --include-package=docx --include-package=lxml --include-package=psutil --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
           if [ -f dist/backend ]; then
@@ -227,7 +236,7 @@ jobs:
           df -h
 
       - name: Build Backend with Nuitka (macOS)
-        if: github.event_name == 'workflow_dispatch' && inputs.build_backend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'macos') && matrix.os == 'macos-latest'
+        if: github.event_name == 'workflow_dispatch' && inputs.build_backend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'macos') && matrix.os == 'macos-latest' && steps.cache-backend.outputs.cache-hit != 'true'
         run: |
           python3 -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --include-package=langchain --include-package=langchain_core --include-package=langchain_community --include-package=langchain_openai --include-package=langchain_anthropic --include-package=langchain_google_genai --include-package=langchain_ollama --include-package=openai --include-package=anthropic --include-package=google.generativeai --include-package=aiofiles --include-package=httpx --include-package=cryptography --include-package=apscheduler --include-package=email_validator --include-package=bs4 --include-package=markdown --include-package=pypdf --include-package=docx --include-package=lxml --include-package=psutil --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
           if [ -f dist/backend ]; then
