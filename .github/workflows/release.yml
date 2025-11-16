@@ -130,7 +130,7 @@ jobs:
           retention-days: 30
 
       - name: Build Release APK
-        if: github.event_name == 'workflow_dispatch' && (inputs.target == 'android' || inputs.target == 'both') && inputs.create_release == 'true'
+        if: github.event_name == 'workflow_dispatch' && (inputs.target == 'android' || inputs.target == 'both') && inputs.create_release
         run: |
           cd android
           ./gradlew assembleRelease --quiet --no-daemon
@@ -141,7 +141,7 @@ jobs:
           MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
 
       - name: Upload Release APK artifact
-        if: github.event_name == 'workflow_dispatch' && (inputs.target == 'android' || inputs.target == 'both') && inputs.create_release == 'true'
+        if: github.event_name == 'workflow_dispatch' && (inputs.target == 'android' || inputs.target == 'both') && inputs.create_release
         uses: actions/upload-artifact@v4
         with:
           name: android-release-apk
@@ -149,7 +149,7 @@ jobs:
           retention-days: 90
 
   build-electron:
-    if: github.event_name == 'workflow_dispatch' && (inputs.target == 'electron' || inputs.target == 'both') && (inputs.build_frontend == 'true' || inputs.build_backend == 'true')
+    if: github.event_name == 'workflow_dispatch' && (inputs.target == 'electron' || inputs.target == 'both') && (inputs.build_frontend || inputs.build_backend)
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -161,7 +161,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        if: inputs.build_frontend == 'true'
+        if: inputs.build_frontend
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -203,7 +203,7 @@ jobs:
             ${{ runner.os }}-nuitka-
             
       - name: Build Backend with Nuitka (Windows)
-        if: github.event_name == 'workflow_dispatch' && inputs.build_backend == 'true' && (inputs.desktop_os == 'all' || inputs.desktop_os == 'windows') && matrix.os == 'windows-latest'
+        if: github.event_name == 'workflow_dispatch' && inputs.build_backend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'windows') && matrix.os == 'windows-latest'
         run: |
           python -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend.exe --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --include-package=langchain --include-package=langchain_core --include-package=langchain_community --include-package=langchain_openai --include-package=langchain_anthropic --include-package=langchain_google_genai --include-package=langchain_ollama --include-package=openai --include-package=anthropic --include-package=google.generativeai --include-package=aiofiles --include-package=httpx --include-package=cryptography --include-package=apscheduler --include-package=email_validator --include-package=bs4 --include-package=markdown --include-package=pypdf --include-package=docx --include-package=lxml --include-package=psutil --enable-plugin=anti-bloat --assume-yes-for-downloads --disable-console --windows-console-mode=attach src/main.py
           if (Test-Path "dist\backend.exe") {
@@ -213,7 +213,7 @@ jobs:
         shell: pwsh
 
       - name: Build Backend with Nuitka (Linux)
-        if: github.event_name == 'workflow_dispatch' && inputs.build_backend == 'true' && (inputs.desktop_os == 'all' || inputs.desktop_os == 'linux') && matrix.os == 'ubuntu-latest'
+        if: github.event_name == 'workflow_dispatch' && inputs.build_backend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'linux') && matrix.os == 'ubuntu-latest'
         run: |
           python3 -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --include-package=langchain --include-package=langchain_core --include-package=langchain_community --include-package=langchain_openai --include-package=langchain_anthropic --include-package=langchain_google_genai --include-package=langchain_ollama --include-package=openai --include-package=anthropic --include-package=google.generativeai --include-package=aiofiles --include-package=httpx --include-package=cryptography --include-package=apscheduler --include-package=email_validator --include-package=bs4 --include-package=markdown --include-package=pypdf --include-package=docx --include-package=lxml --include-package=psutil --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
           if [ -f dist/backend ]; then
@@ -227,7 +227,7 @@ jobs:
           df -h
 
       - name: Build Backend with Nuitka (macOS)
-        if: github.event_name == 'workflow_dispatch' && inputs.build_backend == 'true' && (inputs.desktop_os == 'all' || inputs.desktop_os == 'macos') && matrix.os == 'macos-latest'
+        if: github.event_name == 'workflow_dispatch' && inputs.build_backend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'macos') && matrix.os == 'macos-latest'
         run: |
           python3 -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --include-package=langchain --include-package=langchain_core --include-package=langchain_community --include-package=langchain_openai --include-package=langchain_anthropic --include-package=langchain_google_genai --include-package=langchain_ollama --include-package=openai --include-package=anthropic --include-package=google.generativeai --include-package=aiofiles --include-package=httpx --include-package=cryptography --include-package=apscheduler --include-package=email_validator --include-package=bs4 --include-package=markdown --include-package=pypdf --include-package=docx --include-package=lxml --include-package=psutil --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
           if [ -f dist/backend ]; then
@@ -238,11 +238,11 @@ jobs:
           fi
 
       - name: Install Node dependencies
-        if: inputs.build_frontend == 'true'
+        if: inputs.build_frontend
         run: npm install --silent
 
       - name: Clean up node_modules (Linux)
-        if: inputs.build_frontend == 'true' && (inputs.desktop_os == 'all' || inputs.desktop_os == 'linux') && matrix.os == 'ubuntu-latest'
+        if: inputs.build_frontend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'linux') && matrix.os == 'ubuntu-latest'
         run: |
           echo "=== Disk space before cleanup ==="
           df -h
@@ -252,7 +252,7 @@ jobs:
           df -h
 
       - name: Build Electron app (Linux)
-        if: inputs.build_frontend == 'true' && (inputs.desktop_os == 'all' || inputs.desktop_os == 'linux') && matrix.os == 'ubuntu-latest'
+        if: inputs.build_frontend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'linux') && matrix.os == 'ubuntu-latest'
         run: |
           # Reinstall all dependencies for build
           npm install --silent
@@ -261,7 +261,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Collect packaged artifacts (Linux)
-        if: inputs.build_frontend == 'true' && (inputs.desktop_os == 'all' || inputs.desktop_os == 'linux') && matrix.os == 'ubuntu-latest'
+        if: inputs.build_frontend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'linux') && matrix.os == 'ubuntu-latest'
         shell: bash
         run: |
           set -euo pipefail
@@ -294,13 +294,13 @@ jobs:
           echo "✅ Linux artifacts packaged"
 
       - name: Build Electron app (Windows)
-        if: inputs.build_frontend == 'true' && (inputs.desktop_os == 'all' || inputs.desktop_os == 'windows') && matrix.os == 'windows-latest'
+        if: inputs.build_frontend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'windows') && matrix.os == 'windows-latest'
         run: npm run build -- --win --publish=never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Collect packaged artifacts (Windows)
-        if: inputs.build_frontend == 'true' && (inputs.desktop_os == 'all' || inputs.desktop_os == 'windows') && matrix.os == 'windows-latest'
+        if: inputs.build_frontend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'windows') && matrix.os == 'windows-latest'
         shell: pwsh
         run: |
           $root = "release/upload"
@@ -336,13 +336,13 @@ jobs:
           Write-Host "✅ Windows artifacts packaged"
 
       - name: Build Electron app (macOS)
-        if: inputs.build_frontend == 'true' && (inputs.desktop_os == 'all' || inputs.desktop_os == 'macos') && matrix.os == 'macos-latest'
+        if: inputs.build_frontend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'macos') && matrix.os == 'macos-latest'
         run: npm run build -- --mac --publish=never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Collect packaged artifacts (macOS)
-        if: inputs.build_frontend == 'true' && (inputs.desktop_os == 'all' || inputs.desktop_os == 'macos') && matrix.os == 'macos-latest'
+        if: inputs.build_frontend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'macos') && matrix.os == 'macos-latest'
         shell: bash
         run: |
           set -euo pipefail
@@ -376,7 +376,7 @@ jobs:
           echo "✅ macOS artifacts packaged"
 
       - name: Upload Electron artifacts
-        if: inputs.build_frontend == 'true' && (inputs.desktop_os == 'all' || (inputs.desktop_os == 'linux' && matrix.os == 'ubuntu-latest') || (inputs.desktop_os == 'windows' && matrix.os == 'windows-latest') || (inputs.desktop_os == 'macos' && matrix.os == 'macos-latest'))
+        if: inputs.build_frontend && (inputs.desktop_os == 'all' || (inputs.desktop_os == 'linux' && matrix.os == 'ubuntu-latest') || (inputs.desktop_os == 'windows' && matrix.os == 'windows-latest') || (inputs.desktop_os == 'macos' && matrix.os == 'macos-latest'))
         uses: actions/upload-artifact@v4
         with:
           name: electron-${{ matrix.os }}
@@ -387,7 +387,7 @@ jobs:
     needs:
       - build-electron
       - build-android
-    if: github.event_name == 'workflow_dispatch' && inputs.create_release == 'true'
+    if: github.event_name == 'workflow_dispatch' && inputs.create_release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
