@@ -1,0 +1,471 @@
+NOTICE
+======
+
+This software includes the following third-party open source software components:
+
+================================================================================
+
+## Core Dependencies
+
+### FastAPI
+- Copyright (c) 2018 Sebastián Ramírez
+- License: MIT License
+- https://github.com/tiangolo/fastapi
+
+### Uvicorn
+- Copyright (c) 2017-present, Encode OSS Ltd.
+- License: BSD 3-Clause License
+- https://github.com/encode/uvicorn
+
+### Nuitka
+- Copyright (c) 2024 Kay Hayen
+- License: Apache License 2.0
+- https://github.com/Nuitka/Nuitka
+
+### ordered-set
+- Copyright (c) 2009-2023 Robyn Speer
+- License: MIT License
+- https://github.com/rspeer/ordered-set
+
+### python-dotenv
+- Copyright (c) 2014, Saurabh Kumar
+- License: BSD 3-Clause License
+- https://github.com/theskumar/python-dotenv
+
+### Pydantic
+- Copyright (c) 2017 Samuel Colvin
+- License: MIT License
+- https://github.com/pydantic/pydantic
+
+### SQLAlchemy
+- Copyright (c) 2005-2024 Michael Bayer and contributors
+- License: MIT License
+- https://github.com/sqlalchemy/sqlalchemy
+
+### aiosqlite
+- Copyright (c) 2018 Amethyst Reese
+- License: MIT License
+- https://github.com/omnilib/aiosqlite
+
+### Alembic
+- Copyright (c) 2009-2024 Michael Bayer
+- License: MIT License
+- https://github.com/sqlalchemy/alembic
+
+### aiofiles
+- Copyright (c) 2015-2024 Tin Tvrtković
+- License: Apache License 2.0
+- https://github.com/Tinche/aiofiles
+
+### httpx
+- Copyright (c) 2019 Encode OSS Ltd.
+- License: BSD 3-Clause License
+- https://github.com/encode/httpx
+
+### PyYAML
+- Copyright (c) 2017-2021 Ingy döt Net
+- Copyright (c) 2006-2016 Kirill Simonov
+- License: MIT License
+- https://github.com/yaml/pyyaml
+
+================================================================================
+
+## AI / LangChain
+
+### LangChain (Core, Community, Text Splitters)
+- Copyright (c) 2023 LangChain, Inc.
+- License: MIT License
+- https://github.com/langchain-ai/langchain
+
+### LangChain OpenAI
+- Copyright (c) 2023 LangChain, Inc.
+- License: MIT License
+- https://github.com/langchain-ai/langchain
+
+### LangChain Anthropic
+- Copyright (c) 2023 LangChain, Inc.
+- License: MIT License
+- https://github.com/langchain-ai/langchain
+
+### LangChain Google GenAI
+- Copyright (c) 2023 LangChain, Inc.
+- License: MIT License
+- https://github.com/langchain-ai/langchain
+
+### LangChain Ollama
+- Copyright (c) 2023 LangChain, Inc.
+- License: MIT License
+- https://github.com/langchain-ai/langchain
+
+### LangSmith
+- Copyright (c) 2023 LangChain, Inc.
+- License: MIT License
+- https://github.com/langchain-ai/langsmith-sdk
+
+### LangGraph SDK
+- Copyright (c) 2024 LangChain, Inc.
+- License: MIT License
+- https://github.com/langchain-ai/langgraph
+
+================================================================================
+
+## AI APIs
+
+### OpenAI Python Client
+- Copyright (c) OpenAI
+- License: Apache License 2.0
+- https://github.com/openai/openai-python
+
+### Anthropic Python SDK
+- Copyright (c) Anthropic, PBC
+- License: MIT License
+- https://github.com/anthropics/anthropic-sdk-python
+
+### Google Generative AI
+- Copyright (c) Google LLC
+- License: Apache License 2.0
+- https://github.com/google/generative-ai-python
+
+### Sentence Transformers
+- Copyright (c) 2019 Nils Reimers
+- License: Apache License 2.0
+- https://github.com/UKPLab/sentence-transformers
+
+### Ollama Python
+- Copyright (c) Ollama
+- License: MIT License
+- https://github.com/ollama/ollama-python
+
+================================================================================
+
+## Security / Cryptography
+
+### cryptography
+- Copyright (c) Individual contributors
+- License: Apache License 2.0 / BSD License
+- https://github.com/pyca/cryptography
+
+================================================================================
+
+## Scheduling & File Watching
+
+### APScheduler
+- Copyright (c) 2009-2024 Alex Grönholm
+- License: MIT License
+- https://github.com/agronholm/apscheduler
+
+### watchdog
+- Copyright (c) 2010 Yesudeep Mangalapilly
+- Copyright (c) 2012 Google, Inc. & contributors
+- License: Apache License 2.0
+- https://github.com/gorakhargosh/watchdog
+
+### python-crontab
+- Copyright (c) 2013-2023 Martin Owens
+- License: GNU Lesser General Public License v3 (LGPLv3)
+- https://gitlab.com/doctormo/python-crontab
+
+================================================================================
+
+## Email
+
+### aiosmtplib
+- Copyright (c) 2015-2024 Cole Maclean
+- License: MIT License
+- https://github.com/cole/aiosmtplib
+
+### email-validator
+- Copyright (c) 2015 Joshua Tauberer
+- License: CC0 1.0 Universal (Public Domain)
+- https://github.com/JoshData/python-email-validator
+
+================================================================================
+
+## Document Ingestion
+
+### Beautiful Soup 4
+- Copyright (c) 2004-2024 Leonard Richardson
+- License: MIT License
+- https://www.crummy.com/software/BeautifulSoup/
+
+### Markdown
+- Copyright (c) 2007-2023 The Python Markdown Project
+- License: BSD 3-Clause License
+- https://github.com/Python-Markdown/markdown
+
+### pypdf
+- Copyright (c) 2006-2024 Mathieu Fenniak and contributors
+- License: BSD 3-Clause License
+- https://github.com/py-pdf/pypdf
+
+### python-docx
+- Copyright (c) 2013 Steve Canny
+- License: MIT License
+- https://github.com/python-openxml/python-docx
+
+================================================================================
+
+## Web Scraping
+
+### Playwright for Python
+- Copyright (c) Microsoft Corporation
+- License: Apache License 2.0
+- https://github.com/microsoft/playwright-python
+
+### lxml
+- Copyright (c) 2004 Infrae
+- License: BSD 3-Clause License
+- https://github.com/lxml/lxml
+
+================================================================================
+
+## System Information
+
+### psutil
+- Copyright (c) 2009 Jay Loden, Dave Daeschler, Giampaolo Rodola
+- License: BSD 3-Clause License
+- https://github.com/giampaolo/psutil
+
+================================================================================
+
+## Google APIs
+
+### google-auth
+- Copyright (c) 2016 Google Inc.
+- License: Apache License 2.0
+- https://github.com/googleapis/google-auth-library-python
+
+### google-auth-oauthlib
+- Copyright (c) 2017 Google Inc.
+- License: Apache License 2.0
+- https://github.com/googleapis/google-auth-library-python-oauthlib
+
+### google-auth-httplib2
+- Copyright (c) 2016 Google Inc.
+- License: Apache License 2.0
+- https://github.com/googleapis/google-auth-library-python-httplib2
+
+### google-api-python-client
+- Copyright (c) 2010 Google Inc.
+- License: Apache License 2.0
+- https://github.com/googleapis/google-api-python-client
+
+================================================================================
+
+## Communication APIs
+
+### discord.py
+- Copyright (c) 2015-2024 Rapptz
+- License: MIT License
+- https://github.com/Rapptz/discord.py
+
+### discord-webhook
+- Copyright (c) 2018 kyb3r
+- License: MIT License
+- https://github.com/kyb3r/discord-webhook
+
+### LINE Bot SDK
+- Copyright (c) 2016 LINE Corporation
+- License: Apache License 2.0
+- https://github.com/line/line-bot-sdk-python
+
+### Requests
+- Copyright (c) 2019 Kenneth Reitz
+- License: Apache License 2.0
+- https://github.com/psf/requests
+
+### Slack SDK for Python
+- Copyright (c) Slack Technologies, LLC
+- License: MIT License
+- https://github.com/slackapi/python-slack-sdk
+
+================================================================================
+
+## OCR & Document Processing
+
+### pytesseract
+- Copyright (c) 2014 Samuel Hoffstaetter
+- License: Apache License 2.0
+- https://github.com/madmaze/pytesseract
+
+### Pillow
+- Copyright (c) 1997-2011 by Secret Labs AB
+- Copyright (c) 1995-2011 by Fredrik Lundh
+- Copyright (c) 2010-2024 by Jeffrey A. Clark (Alex) and contributors
+- License: Historical Permission Notice and Disclaimer (HPND)
+- https://github.com/python-pillow/Pillow
+
+### pdf2image
+- Copyright (c) 2016-2024 Edouard Belval
+- License: MIT License
+- https://github.com/Belval/pdf2image
+
+================================================================================
+
+## Speech Processing
+
+### SpeechRecognition
+- Copyright (c) 2014-2017 Anthony Zhang (Uberi)
+- License: BSD 3-Clause License
+- https://github.com/Uberi/speech_recognition
+
+### pydub
+- Copyright (c) 2011 James Robert
+- License: MIT License
+- https://github.com/jiaaro/pydub
+
+================================================================================
+
+## Miscellaneous
+
+### python-multipart
+- Copyright (c) 2012-2024 Andrew Dunham
+- License: Apache License 2.0
+- https://github.com/Kludex/python-multipart
+
+### tenacity
+- Copyright (c) 2016-2024 Julien Danjou
+- License: Apache License 2.0
+- https://github.com/jd/tenacity
+
+================================================================================
+
+## Testing
+
+### pytest
+- Copyright (c) 2004 Holger Krekel and others
+- License: MIT License
+- https://github.com/pytest-dev/pytest
+
+### pytest-asyncio
+- Copyright (c) 2014 Tin Tvrtković
+- License: Apache License 2.0
+- https://github.com/pytest-dev/pytest-asyncio
+
+================================================================================
+
+## License Texts
+
+### MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+
+### Apache License 2.0
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Full license text: https://www.apache.org/licenses/LICENSE-2.0
+
+================================================================================
+
+### BSD 3-Clause License
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+================================================================================
+
+### GNU Lesser General Public License v3 (LGPLv3)
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 3 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+Full license text: https://www.gnu.org/licenses/lgpl-3.0.html
+
+================================================================================
+
+### HPND License (Historical Permission Notice and Disclaimer)
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+================================================================================
+
+### CC0 1.0 Universal (Public Domain Dedication)
+
+The person who associated a work with this deed has dedicated the work to
+the public domain by waiving all of his or her rights to the work worldwide
+under copyright law, including all related and neighboring rights, to the
+extent allowed by law.
+
+You can copy, modify, distribute and perform the work, even for commercial
+purposes, all without asking permission.
+
+Full license text: https://creativecommons.org/publicdomain/zero/1.0/
+
+================================================================================
+
+For the most up-to-date license information, please refer to each project's
+official repository listed above.
+
+Last updated: 2025-11-17
