@@ -2,9 +2,8 @@
 chcp 65001 >nul
 
 REM ============================================================================
-REM Backend Build Script (Nuitka + Local Cache)
-REM This script builds the Python backend with Nuitka on Windows and populates
-REM a local Nuitka cache directory that can be reused by CI workflows.
+REM Backend Build Script (Nuitka, Windows)
+REM Builds the Python backend with Nuitka and uses a local Nuitka cache.
 REM ============================================================================
 
 setlocal enabledelayedexpansion
@@ -18,7 +17,7 @@ if not errorlevel 1 (
 
 echo.
 echo ========================================
-echo Hyper AI Agent - Backend Nuitka Cache Build
+echo Hyper AI Agent - Backend Nuitka Build (Windows)
 echo ========================================
 echo.
 
@@ -83,9 +82,6 @@ if not exist "%NUITKA_CACHE_DIR%" (
     mkdir "%NUITKA_CACHE_DIR%"
 )
 
-REM Note: The GitHub Actions workflow also uses '.nuitka-cache' as the cache
-REM path, so this directory can be shared conceptually with CI.
-
 REM -----------------------------------------------------------------------------
 REM Step 3: Clean previous backend build outputs (but keep the cache)
 REM -----------------------------------------------------------------------------
@@ -128,17 +124,9 @@ if exist dist\backend.exe (
     exit /b 1
 )
 
-REM -----------------------------------------------------------------------------
-REM Step 6: Optional cleanup of build directory (keeps the Nuitka cache)
-REM -----------------------------------------------------------------------------
-if exist build (
-    echo [INFO] Cleaning up build directory to save disk space...
-    rmdir /s /q build
-)
-
 echo.
 echo ========================================
-echo Backend build with Nuitka completed.
+echo Backend build with Nuitka completed (Windows).
 echo Executable: dist\backend\backend.exe
 echo Nuitka cache: %NUITKA_CACHE_DIR%
 echo ========================================
