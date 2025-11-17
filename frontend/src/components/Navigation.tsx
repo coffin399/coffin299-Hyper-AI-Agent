@@ -21,7 +21,6 @@ import {
   Person,
   VideoLibrary,
   MeetingRoom,
-  Chat,
   DocumentScanner,
   ChatBubble,
   ChevronLeft,
