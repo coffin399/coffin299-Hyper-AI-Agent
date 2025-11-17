@@ -83,6 +83,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, open, o
   const menuItems = [
     { id: 'dashboard', label: 'ダッシュボード', icon: <Dashboard /> },
     { id: 'models', label: 'モデル管理', icon: <SmartToy /> },
+    { id: 'flows', label: '自動フロー', icon: <ChatBubble /> },
     { id: 'google', label: 'Google連携', icon: <Cloud /> },
     { id: 'discord', label: 'Discord連携', icon: <DiscordIcon sx={{ color: '#5865F2' }} /> },
     { id: 'line', label: 'LINE連携', icon: <LineIcon sx={{ color: '#00C300' }} /> },

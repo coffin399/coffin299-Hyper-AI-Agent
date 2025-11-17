@@ -15,6 +15,8 @@ from .meeting import router as meeting_router
 from .ocr import router as ocr_router
 from .discord import router as discord_router
 from .line import router as line_router
+from .slack import router as slack_router
+from .workflows import router as workflows_router
 
 __all__ = [
     "automation_router",
@@ -34,4 +36,6 @@ __all__ = [
     "ocr_router",
     "discord_router",
     "line_router",
+    "slack_router",
+    "workflows_router",
 ]

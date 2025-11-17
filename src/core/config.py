@@ -130,6 +130,9 @@ class Settings(BaseSettings):
     max_context_messages: int = 20
     summary_trigger_messages: int = 12
 
+    # Unsafe execution (advanced / self-hosted only)
+    enable_unsafe_exec: bool = False
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

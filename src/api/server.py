@@ -28,6 +28,7 @@ from .routes import (
     roles_router,
     slack_router,
     tools_router,
+    workflows_router,
 )
 
 logger = logging.getLogger(__name__)
@@ -72,6 +73,7 @@ app.include_router(providers_router)
 app.include_router(roles_router)
 app.include_router(slack_router)
 app.include_router(tools_router)
+app.include_router(workflows_router)
 
 
 @app.get("/")

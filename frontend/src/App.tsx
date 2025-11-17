@@ -13,6 +13,7 @@ import AIRoles from './components/AIRoles';
 import AIMedia from './components/AIMedia';
 import AIMeeting from './components/AIMeeting';
 import AIChat from './components/AIChat';
+import AIFlows from './components/AIFlows';
 import AIOCR from './components/AIOCR';
 import Settings from './components/Settings';
 import './App.css';
@@ -43,6 +44,8 @@ function App() {
         return <AIMeeting />;
       case 'chat':
         return <AIChat />;
+      case 'flows':
+        return <AIFlows />;
       case 'ocr':
         return <AIOCR />;
       case 'settings':
