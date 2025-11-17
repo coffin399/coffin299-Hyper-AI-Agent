@@ -1,14 +1,16 @@
 # Backend Build Guide
 
-This guide explains how to build the Python backend into a standalone executable using Nuitka.
+This guide explains how to build the Python backend into a standalone executable using Briefcase 0.3.25.
 
 ## Prerequisites
 
 - Python 3.11 or higher
 - All dependencies from `requirements.txt` installed
-- Nuitka (will be installed automatically by the build script)
-- C compiler (MSVC on Windows, GCC on Linux, Clang on macOS)
-- **Note**: First build will take 10-30 minutes as Nuitka downloads and compiles dependencies
+  - `requirements.txt` には `briefcase==0.3.25` が含まれています
+- Briefcase 0.3.25（`pip install -r requirements.txt` でインストールされます）
+- （必要に応じて）C コンパイラ
+  - 一部の Python パッケージがホイールを持たない場合にビルドに必要
+- **Note**: 初回の Briefcase ビルドではテンプレートアプリや依存ツールのセットアップが入るため、数分程度かかることがあります
 
 ## Building the Backend
 
@@ -89,10 +91,17 @@ Users can switch between modes in the Settings screen.
 
 ## Troubleshooting
 
-### Build fails with "Nuitka not found"
-Install Nuitka manually:
+### Build fails with "briefcase: command not found" / "No module named 'briefcase'"
+
+Briefcase が正しくインストールされていない可能性があります。
+
 ```bash
-pip install nuitka==2.4.9 ordered-set==4.1.0
+# 推奨: プロジェクトルートで
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+# または直接インストール
+pip install briefcase==0.3.25
 ```
 
 ### Build fails with "C compiler not found"
@@ -122,59 +131,59 @@ npm run build
 To integrate backend building into your CI/CD pipeline:
 
 1. Install Python and dependencies
-2. Run the build script
-3. Copy `dist/backend/backend.exe` to Electron's resources
+2. Run the Briefcase build (per OS)
+3. Copy `dist/backend/backend(.exe)` to Electron のリソースとして含める
 4. Build Electron app with electron-builder
 
 Example GitHub Actions workflow:
 ```yaml
-- name: Build Backend
+- name: Install Python dependencies
   run: |
+    python -m pip install --upgrade pip
     pip install -r requirements.txt
-    python -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend.exe --include-package=fastapi --include-package=uvicorn --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
-    mkdir -p dist/backend
-    mv dist/backend.exe dist/backend/backend.exe
-    
+
+- name: Build Backend with Briefcase (Windows)
+  if: runner.os == 'Windows'
+  shell: pwsh
+  run: |
+    briefcase create windows
+    briefcase build windows -u
+
+    $appPath = "windows\Hyper AI Agent Backend\app\Hyper AI Agent Backend.exe"
+    if (-not (Test-Path $appPath)) {
+      throw "Backend executable not found: $appPath"
+    }
+
+    New-Item -ItemType Directory -Force -Path "dist\backend" | Out-Null
+    Copy-Item -Path $appPath -Destination "dist\backend\backend.exe" -Force
+
 - name: Build Electron
   run: |
     npm run build:frontend
     npm run build
 ```
 
-## File Size Optimization
+## Bundle Size & Performance
 
-The bundled backend executable is large (~150-250MB) because it includes:
-- Python runtime
-- All dependencies (FastAPI, LangChain, etc.)
-- Native libraries
+### Bundle size
 
-To reduce size:
-1. Use `--enable-plugin=anti-bloat` (already enabled)
-2. Exclude unused packages with `--nofollow-import-to` flags
-3. Use compression (handled by electron-builder)
+Briefcase でパッケージされたバックエンド実行ファイル / アプリは、概ね **150〜250MB** 程度になります。含まれるもの:
 
-## Build Performance
+- Python ランタイム
+- すべてのバックエンド依存パッケージ（FastAPI, LangChain など）
+- それらのネイティブライブラリ
 
-**First Build**: 10-30 minutes
-- Nuitka downloads C compiler dependencies
-- Compiles all Python packages to C
-- Creates optimized executable
+圧縮や差分アップデートなどは Electron 側（electron-builder）の設定に依存します。
 
-**Subsequent Builds**: 5-15 minutes
-- Uses cached compiled modules
-- Only recompiles changed code
+### Build Performance
 
-## Nuitka vs PyInstaller
+- **初回ビルド**
+  - Briefcase がテンプレートアプリや依存ツールを準備するため、時間がかかる場合があります
+  - OS ごとのアプリ構造を生成し、Python 依存関係をコピー
+- **2 回目以降のビルド**
+  - 既存のテンプレートとキャッシュ済み依存関係を再利用するため、比較的高速になります
 
-**Advantages of Nuitka**:
-- ✅ Better performance (compiled to C)
-- ✅ Smaller executable size
-- ✅ Better compatibility with complex packages
-- ✅ No unpacking at runtime
-
-**Disadvantages**:
-- ⚠️ Longer initial build time
-- ⚠️ Requires C compiler
+CI では、`.briefcase-cache` などのキャッシュディレクトリを再利用することでビルド時間を短縮できます（Windows 用の `build-backend-nuitka-cache.bat` はローカルと CI で共有可能なキャッシュディレクトリを想定しています）。
 
 ## Security Considerations
 

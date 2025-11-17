@@ -60,41 +60,53 @@ echo ""
 # ============================================================================
 # Step 2: Build Backend with PyInstaller
 # ============================================================================
-echo "[STEP 2/6] Building backend with PyInstaller..."
+echo "[STEP 2/6] Building backend with Briefcase..."
 echo ""
-
-if [ -d "build" ]; then
-    echo "[INFO] Cleaning previous build directory..."
-    rm -rf build
-fi
 
 if [ -d "dist/backend" ]; then
     echo "[INFO] Cleaning previous dist/backend directory..."
     rm -rf dist/backend
 fi
 
-echo "[INFO] Running Nuitka (this may take 10-30 minutes)..."
-echo "[INFO] Note: First build will be slow as Nuitka downloads dependencies"
-python3 -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --include-package=langchain --include-package=langchain_core --include-package=langchain_community --include-package=langchain_openai --include-package=langchain_anthropic --include-package=langchain_google_genai --include-package=langchain_ollama --include-package=openai --include-package=anthropic --include-package=google.generativeai --include-package=aiofiles --include-package=httpx --include-package=cryptography --include-package=apscheduler --include-package=email_validator --include-package=bs4 --include-package=markdown --include-package=pypdf --include-package=docx --include-package=lxml --include-package=psutil --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
+PLATFORM="$(uname)"
+echo "[INFO] Detected platform: $PLATFORM"
 
-# Move backend to dist/backend directory
-if [ -f "dist/backend" ]; then
-    mkdir -p dist/backend_dir
-    mv dist/backend dist/backend_dir/backend
-    chmod +x dist/backend_dir/backend
-    mv dist/backend_dir dist/backend
-    echo "[SUCCESS] Backend built successfully"
-    echo ""
+if [[ "$PLATFORM" == "Darwin" ]]; then
+    echo "[INFO] Building backend with Briefcase (macOS)..."
+    briefcase create macOS
+    briefcase build macOS -u
+
+    APP="macOS/Hyper AI Agent Backend.app/Contents/MacOS/Hyper AI Agent Backend"
+    if [ ! -f "$APP" ]; then
+        echo "[ERROR] Backend binary not found: $APP"
+        exit 1
+    fi
+
+    mkdir -p dist/backend
+    cp "$APP" dist/backend/backend
+    chmod +x dist/backend/backend
+elif [[ "$PLATFORM" == "Linux" ]]; then
+    echo "[INFO] Building backend with Briefcase (Linux)..."
+    briefcase create linux
+    briefcase build linux -u
+
+    APP_DIR="linux/Hyper AI Agent Backend/app"
+    BIN="$APP_DIR/Hyper AI Agent Backend"
+    if [ ! -f "$BIN" ]; then
+        echo "[ERROR] Backend binary not found: $BIN"
+        exit 1
+    fi
+
+    mkdir -p dist/backend
+    cp "$BIN" dist/backend/backend
+    chmod +x dist/backend/backend
 else
-    echo "[ERROR] Backend build output not found"
+    echo "[ERROR] Unsupported platform: $PLATFORM"
     exit 1
 fi
 
-# Clean up build artifacts to save disk space
-if [ -d "build" ]; then
-    echo "[INFO] Cleaning up build artifacts..."
-    rm -rf build
-fi
+echo "[SUCCESS] Backend built successfully"
+echo ""
 
 # ============================================================================
 # Step 3: Install Node.js Dependencies

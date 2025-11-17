@@ -69,6 +69,7 @@ Hyper AI Agentは、複数のAIプロバイダーに対応し、RAG（検索拡�
 - **データベース**: SQLite (ローカル) + SQLAlchemy 2.0.35
 - **通信**: REST API
 - **暗号化**: Cryptography 43.0.3 (AES 128 + HMAC-SHA256)
+- **パッケージング**: Briefcase 0.3.25 + electron-builder によるスタンドアロン配布
 
 ### モバイル版 (Android)
 - **フレームワーク**: React Native 0.72.6

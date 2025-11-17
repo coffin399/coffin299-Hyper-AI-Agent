@@ -72,18 +72,7 @@ echo [SUCCESS] Python environment ready.
 echo.
 
 REM -----------------------------------------------------------------------------
-REM Step 2: Configure Nuitka compilation cache directory
-REM -----------------------------------------------------------------------------
-set "NUITKA_CACHE_DIR=%CD%\.nuitka-cache"
-echo [INFO] Using Nuitka cache directory: %NUITKA_CACHE_DIR%
-
-if not exist "%NUITKA_CACHE_DIR%" (
-    echo [INFO] Creating Nuitka cache directory...
-    mkdir "%NUITKA_CACHE_DIR%"
-)
-
-REM -----------------------------------------------------------------------------
-REM Step 3: Clean previous backend build outputs (but keep the cache)
+REM Step 3: Clean previous backend build outputs
 REM -----------------------------------------------------------------------------
 if exist build (
     echo [INFO] Cleaning previous 'build' directory...
@@ -96,14 +85,21 @@ if exist dist\backend (
 )
 
 REM -----------------------------------------------------------------------------
-REM Step 4: Build backend with Nuitka (uses the cache directory)
+REM Step 4: Build backend (Briefcase)
 REM -----------------------------------------------------------------------------
-echo [INFO] Running Nuitka (this may take 10-30 minutes)...
-echo [INFO] Note: first build will be slow while Nuitka populates the cache.
+echo [INFO] Building backend with Briefcase (Windows)...
 
-python -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend.exe --include-package=fastapi --include-package=uvicorn --include-package=pydantic --include-package=sqlalchemy --include-package=langchain --include-package=langchain_core --include-package=langchain_community --include-package=langchain_openai --include-package=langchain_anthropic --include-package=langchain_google_genai --include-package=langchain_ollama --include-package=openai --include-package=anthropic --include-package=google.generativeai --include-package=aiofiles --include-package=httpx --include-package=cryptography --include-package=apscheduler --include-package=email_validator --include-package=bs4 --include-package=markdown --include-package=pypdf --include-package=docx --include-package=lxml --include-package=psutil --enable-plugin=anti-bloat --assume-yes-for-downloads --disable-console --windows-console-mode=attach src/main.py
+briefcase create windows
 if errorlevel 1 (
-    echo [ERROR] Backend build failed.
+    echo [ERROR] Briefcase create failed.
+    echo.
+    pause
+    exit /b 1
+)
+
+briefcase build windows -u
+if errorlevel 1 (
+    echo [ERROR] Briefcase build failed.
     echo.
     pause
     exit /b 1
@@ -112,13 +108,13 @@ if errorlevel 1 (
 REM -----------------------------------------------------------------------------
 REM Step 5: Move backend.exe into a stable output directory
 REM -----------------------------------------------------------------------------
-if exist dist\backend.exe (
+set "APP_PATH=windows\Hyper AI Agent Backend\app\Hyper AI Agent Backend.exe"
+if exist "%APP_PATH%" (
     mkdir dist\backend 2>nul
-    move /y dist\backend.exe dist\backend\backend.exe >nul
+    copy /y "%APP_PATH%" dist\backend\backend.exe >nul
     echo [SUCCESS] Backend executable created at: dist\backend\backend.exe
-    echo [SUCCESS] Nuitka cache directory: %NUITKA_CACHE_DIR%
 ) else (
-    echo [ERROR] Backend build output not found (dist\backend.exe).
+    echo [ERROR] Backend build output not found: %APP_PATH%.
     echo.
     pause
     exit /b 1
@@ -126,9 +122,8 @@ if exist dist\backend.exe (
 
 echo.
 echo ========================================
-echo Backend build with Nuitka completed (Windows).
+echo Backend build completed (Windows).
 echo Executable: dist\backend\backend.exe
-echo Nuitka cache: %NUITKA_CACHE_DIR%
 echo ========================================
 echo.
 

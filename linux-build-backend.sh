@@ -52,53 +52,21 @@ if [ -d "dist/backend" ]; then
   rm -rf dist/backend
 fi
 
-# Build backend with Nuitka
-echo "[INFO] Running Nuitka (this may take 10-30 minutes)..."
-echo "[INFO] Note: first build will be slow as Nuitka downloads dependencies"
+echo "[INFO] Building backend with Briefcase (Linux)..."
+briefcase create linux
+briefcase build linux -u
 
-python3 -m nuitka \
-  --standalone --onefile \
-  --output-dir=dist \
-  --output-filename=backend \
-  --include-package=fastapi \
-  --include-package=uvicorn \
-  --include-package=pydantic \
-  --include-package=sqlalchemy \
-  --include-package=langchain \
-  --include-package=langchain_core \
-  --include-package=langchain_community \
-  --include-package=langchain_openai \
-  --include-package=langchain_anthropic \
-  --include-package=langchain_google_genai \
-  --include-package=langchain_ollama \
-  --include-package=openai \
-  --include-package=anthropic \
-  --include-package=google.generativeai \
-  --include-package=aiofiles \
-  --include-package=httpx \
-  --include-package=cryptography \
-  --include-package=apscheduler \
-  --include-package=email_validator \
-  --include-package=bs4 \
-  --include-package=markdown \
-  --include-package=pypdf \
-  --include-package=docx \
-  --include-package=lxml \
-  --include-package=psutil \
-  --enable-plugin=anti-bloat \
-  --assume-yes-for-downloads \
-  src/main.py
-
-if [ ! -f "dist/backend" ]; then
-  echo "[ERROR] Backend build output not found (dist/backend)"
+APP_DIR="linux/Hyper AI Agent Backend/app"
+BIN="$APP_DIR/Hyper AI Agent Backend"
+if [ ! -f "$BIN" ]; then
+  echo "[ERROR] Backend binary not found: $BIN"
   exit 1
 fi
 
 echo "[INFO] Moving backend binary to dist/backend/backend..."
-mkdir -p dist/backend_dir
-mv dist/backend dist/backend_dir/backend
-chmod +x dist/backend_dir/backend
-mv dist/backend_dir dist/backend
+mkdir -p dist/backend
+cp "$BIN" dist/backend/backend
+chmod +x dist/backend/backend
 
 echo ""
 echo "========================================"

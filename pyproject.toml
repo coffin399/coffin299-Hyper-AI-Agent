@@ -1,0 +1,71 @@
+[build-system]
+requires = ["briefcase>=0.3.25"]
+build-backend = "briefcase.build"
+
+[project]
+name = "hyper-ai-agent-backend"
+version = "0.1.0"
+description = "Hyper AI Agent backend — BYOK multi-provider AI agent with RAG and automation"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.115.0",
+    "uvicorn[standard]==0.32.0",
+    "python-dotenv==1.0.1",
+    "pydantic==2.9.0",
+    "sqlalchemy[asyncio]==2.0.35",
+    "aiosqlite==0.20.0",
+    "alembic==1.14.0",
+    "aiofiles==24.1.0",
+    "httpx",
+    "pyyaml==6.0.2",
+    "langchain-core==0.3.17",
+    "langchain==0.3.7",
+    "langchain-text-splitters==0.3.2",
+    "langchain-community==0.3.7",
+    "langchain-openai==0.2.5",
+    "langchain-anthropic==0.3.0",
+    "langchain-google-genai",
+    "langchain-ollama",
+    "langsmith==0.1.143",
+    "langgraph-sdk==0.1.37",
+    "openai",
+    "anthropic",
+    "google-genai",
+    "sentence-transformers==3.2.0",
+    "ollama",
+    "cryptography==43.0.3",
+    "apscheduler==3.10.4",
+    "watchdog==6.0.0",
+    "python-crontab==3.2.0",
+    "aiosmtplib==3.0.2",
+    "email-validator==2.2.0",
+    "beautifulsoup4==4.12.3",
+    "markdown==3.7",
+]
+
+[tool.briefcase]
+project_name = "Hyper AI Agent Backend"
+bundle = "com.coffin299.hyper-ai-agent"
+version = "0.1.0"
+url = "https://example.com/hyper-ai-agent"
+license = "Proprietary"
+author = "Hyper AI Agent"
+author_email = "contact@example.com"
+
+[tool.briefcase.app.hyper-ai-agent-backend]
+formal_name = "Hyper AI Agent Backend"
+description = "Hyper AI Agent backend — BYOK multi-provider AI agent with RAG and automation"
+sources = ["."]
+console_app = true
+module = "src.main"
+
+[tool.briefcase.app.hyper-ai-agent-backend.macOS]
+requires = []
+
+[tool.briefcase.app.hyper-ai-agent-backend.linux]
+requires = []
+
+[tool.briefcase.app.hyper-ai-agent-backend.windows]
+requires = []
+

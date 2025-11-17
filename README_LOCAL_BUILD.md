@@ -7,7 +7,8 @@ This guide explains how to build Hyper AI Agent on your local machine.
 - **Python 3.11 or higher**
 - **Node.js 20 or higher**
 - **Git**
-- **C Compiler** (MSVC on Windows, GCC on Linux, Clang on macOS)
+- **(Optional) C Compiler** (MSVC on Windows, GCC on Linux, Clang on macOS)
+  - 一部の Python パッケージがバイナリホイールを持たない場合に必要になることがあります
 
 ## Quick Start
 
@@ -24,7 +25,7 @@ build-local.bat
 The script will:
 - Create a Python virtual environment
 - Install Python dependencies
-- Build the backend with PyInstaller
+- Build the backend with **Briefcase 0.3.25** (Windows 用実行ファイルを生成)
 - Install Node.js dependencies
 - Build the React frontend
 - Package the Electron app
@@ -72,9 +73,25 @@ After a successful build, you will find the following in the `output` folder:
 Creates an isolated Python environment and installs all required dependencies from `requirements.txt`.
 
 ### Step 2: Backend Build
-Uses Nuitka to compile the Python backend into a standalone executable in `dist/backend/`.
+Uses **Briefcase 0.3.25** to build the Python backend into a standalone executable:
 
-**Note**: First build may take 10-30 minutes as Nuitka downloads dependencies and compiles to C. Subsequent builds are faster (5-15 minutes).
+- **Windows**: `dist/backend/backend.exe`
+- **Linux/macOS**: `dist/backend/backend`
+
+実際の処理内容（スクリプト内部）:
+
+- Windows (`build-local.bat`)
+  - `briefcase create windows`
+  - `briefcase build windows -u`
+  - `windows\Hyper AI Agent Backend\app\Hyper AI Agent Backend.exe` → `dist\backend\backend.exe` にコピー
+- Linux/macOS (`build-local.sh`)
+  - `uname` で Linux / macOS を判定
+  - Linux: `briefcase create linux && briefcase build linux -u`
+    - `linux/Hyper AI Agent Backend/app/Hyper AI Agent Backend` → `dist/backend/backend` へコピー
+  - macOS: `briefcase create macOS && briefcase build macOS -u`
+    - `macOS/Hyper AI Agent Backend.app/Contents/MacOS/Hyper AI Agent Backend` → `dist/backend/backend` へコピー
+
+**Note**: 初回ビルドは Briefcase がテンプレートアプリや依存ツールを準備するため数分かかることがあります。2 回目以降はキャッシュが効きます。
 
 ### Step 3: Node.js Dependencies
 Installs all Node.js packages required for the frontend and Electron.
@@ -106,16 +123,25 @@ pip install -r requirements.txt
 ```
 
 ### "Backend build failed"
-Ensure you have a C compiler installed (required for Nuitka):
-- **Windows**: Install Visual Studio Build Tools or MSVC
-- **Linux**: `sudo apt-get install gcc` or `sudo yum install gcc`
-- **macOS**: Install Xcode Command Line Tools: `xcode-select --install`
+1. `requirements.txt` から依存関係が正しくインストールされているか確認してください。
+2. Briefcase がインストール済みか確認してください:
+
+   ```bash
+   python -m pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+
+3. 一部のパッケージで C コンパイラが必要になる場合があります:
+   - **Windows**: Visual Studio Build Tools または MSVC をインストール
+   - **Linux**: `sudo apt-get install gcc` or `sudo yum install gcc`
+   - **macOS**: Xcode Command Line Tools: `xcode-select --install`
 
 ### Build is very slow
-Nuitka compiles Python to C, which takes time:
-- **First build**: 10-30 minutes (downloads dependencies)
-- **Subsequent builds**: 5-15 minutes (uses cache)
-This is normal and results in better performance.
+
+Briefcase 初回実行時は、テンプレートアプリの取得や依存関係コピーなどに時間がかかる場合があります:
+
+- **First build**: 数分〜十数分（テンプレート/依存ツールの準備）
+- **Subsequent builds**: キャッシュ済みのテンプレート/依存関係を再利用するため高速化
 
 ### "Electron build failed"
 Check that you have enough disk space (at least 5GB free) and try running:
@@ -138,8 +164,28 @@ venv\Scripts\activate  # Windows
 source venv/bin/activate  # Linux/macOS
 pip install -r requirements.txt
 
-# 2. Build backend with Nuitka
-python -m nuitka --standalone --onefile --output-dir=dist --output-filename=backend.exe --include-package=fastapi --include-package=uvicorn --enable-plugin=anti-bloat --assume-yes-for-downloads src/main.py
+# 2. Build backend with Briefcase
+
+## Windows
+briefcase create windows
+briefcase build windows -u
+
+# dist/backend/backend.exe にコピー
+mkdir dist\backend 2>nul
+copy /y "windows\Hyper AI Agent Backend\app\Hyper AI Agent Backend.exe" dist\backend\backend.exe
+
+## Linux / macOS
+briefcase create linux   # Linux の場合
+briefcase build linux -u
+
+# または
+briefcase create macOS   # macOS の場合
+briefcase build macOS -u
+
+# dist/backend/backend にコピー
+mkdir -p dist/backend
+cp "linux/Hyper AI Agent Backend/app/Hyper AI Agent Backend" dist/backend/backend  # Linux
+cp "macOS/Hyper AI Agent Backend.app/Contents/MacOS/Hyper AI Agent Backend" dist/backend/backend  # macOS
 
 # 3. Install Node.js dependencies
 npm install
@@ -169,10 +215,19 @@ Then run the build script again.
 ## Build Configuration
 
 ### Backend Configuration
-Edit `scripts/build_backend.ps1` or `scripts/build_backend.sh` to customize Nuitka settings:
-- Add/remove `--include-package` flags
-- Change executable name with `--output-filename`
-- Add optimization flags like `--lto=yes`
+Backend のビルドロジックは主に以下の場所にあります:
+
+- `scripts/build_backend.ps1` / `scripts/build_backend.sh`
+- `build-local.bat` / `build-local.sh`
+- OS 別バックエンドスクリプト: `windows-build-backend.bat`, `linux-build-backend.sh`, `macos-build-backend.sh`
+
+これらのスクリプトは内部で Briefcase を実行し、生成されたアプリから実行ファイルを `dist/backend/backend(.exe)` にコピーします。
+
+カスタマイズ例:
+
+- Briefcase のターゲットプラットフォームや追加オプションを変更したい場合:
+  - `pyproject.toml` の `[tool.briefcase.app.hyper-ai-agent-backend.*]` セクションを編集
+  - あるいはスクリプト内の `briefcase create/build ...` コマンドにフラグを追加
 
 ### Frontend Configuration
 Edit `frontend/package.json` and `frontend/public/` to customize the React app.
