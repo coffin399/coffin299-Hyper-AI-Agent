@@ -9,6 +9,13 @@ REM ============================================================================
 
 setlocal enabledelayedexpansion
 
+REM Prefer Python 3.11 via py launcher if available, otherwise fall back to 'python'
+set "PY_CMD=python"
+py -3.11 --version >nul 2>&1
+if not errorlevel 1 (
+    set "PY_CMD=py -3.11"
+)
+
 echo.
 echo ========================================
 echo Hyper AI Agent - Backend Nuitka Cache Build
@@ -16,17 +23,17 @@ echo ========================================
 echo.
 
 REM -----------------------------------------------------------------------------
-REM Step 0: Check Python
+REM Step 0: Check Python (prefer 3.11 if available)
 REM -----------------------------------------------------------------------------
-python --version >nul 2>&1
+%PY_CMD% --version >nul 2>&1
 if errorlevel 1 (
     echo [ERROR] Python is not installed or not in PATH.
     echo Please install Python 3.11 or higher.
     exit /b 1
 )
-
+echo [INFO] Using Python command: %PY_CMD%
 echo [INFO] Python version:
-python --version
+%PY_CMD% --version
 echo.
 
 REM -----------------------------------------------------------------------------
@@ -36,7 +43,7 @@ if exist venv (
     echo [INFO] Using existing virtual environment 'venv'.
 ) else (
     echo [INFO] Creating virtual environment 'venv'...
-    python -m venv venv
+    %PY_CMD% -m venv venv
     if errorlevel 1 (
         echo [ERROR] Failed to create virtual environment.
         exit /b 1
