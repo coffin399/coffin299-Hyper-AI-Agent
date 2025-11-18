@@ -5,14 +5,19 @@ from functools import lru_cache
 from typing import Iterable, List
 
 import numpy as np
-from sentence_transformers import SentenceTransformer
+try:
+    from sentence_transformers import SentenceTransformer
+except Exception:
+    SentenceTransformer = None
 
 
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
 
 @lru_cache(maxsize=1)
-def _load_model() -> SentenceTransformer:  # pragma: no cover - heavy external dependency
+def _load_model() -> "SentenceTransformer":  # pragma: no cover - heavy external dependency
+    if SentenceTransformer is None:
+        raise RuntimeError("sentence-transformers is not installed; embedding features are unavailable on this platform.")
     return SentenceTransformer(EMBEDDING_MODEL)
 
 
