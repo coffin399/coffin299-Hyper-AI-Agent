@@ -4,7 +4,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import List, Optional
 
-from pydantic import BaseSettings, Field, SecretStr, validator
+from pydantic import Field, SecretStr, validator
+from pydantic_settings import BaseSettings
 
 
 # Available LLM Models (November 2025)
