@@ -79,7 +79,7 @@ const SlackConnect: React.FC<SlackConnectProps> = ({ onConnect, onDisconnect }) 
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
             <Box
               component="img"
-              src="/icons/Slack_logo.png"
+              src="icons/Slack_logo.png"
               alt="Slack"
               sx={{ width: 32, height: 32, mr: 2, borderRadius: 1 }}
             />

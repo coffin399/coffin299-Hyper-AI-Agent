@@ -107,7 +107,9 @@ class Settings(BaseSettings):
     plugins_dir: Path = Field(default_factory=lambda: Path(".data") / "plugins")
 
     # Encryption secret for BYOK storage (base64 urlsafe string for Fernet)
-    keystore_secret: SecretStr = Field(..., env="KEYSTORE_SECRET")
+    # In production or self-hosted deployments, override via KEYSTORE_SECRET env var.
+    # The default value is only intended for local development and packaged desktop builds.
+    keystore_secret: SecretStr = Field("change-me-in-production", env="KEYSTORE_SECRET")
 
     # Allowed hosts for CORS (comma-separated list)
     cors_origins: str = "*"
