@@ -49,14 +49,14 @@ project_name = "Hyper AI Agent Backend"
 bundle = "com.coffin299.hyper-ai-agent"
 version = "0.1.0"
 url = "https://example.com/hyper-ai-agent"
-license = "Proprietary"
+license.file = "LICENSE"
 author = "Hyper AI Agent"
 author_email = "contact@example.com"
 
 [tool.briefcase.app.hyper-ai-agent-backend]
 formal_name = "Hyper AI Agent Backend"
 description = "Hyper AI Agent backend — BYOK multi-provider AI agent with RAG and automation"
-sources = ["."]
+sources = ["src", "hyper_ai_agent_backend"]
 console_app = true
 module = "src.main"
 

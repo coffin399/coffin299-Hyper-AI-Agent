@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { CssBaseline, Box } from '@mui/material';
 import Navigation from './components/Navigation';
-import ModernDashboard from './components/ModernDashboard';
+import OverviewDashboard from './components/OverviewDashboard';
 import ModelManager from './components/ModelManager';
 import GoogleConnect from './components/GoogleConnect';
 import DiscordConnect from './components/DiscordConnect';
@@ -20,7 +20,7 @@ import './App.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -52,7 +52,7 @@ function App() {
         return <Settings />;
       case 'dashboard':
       default:
-        return <ModernDashboard />;
+        return <OverviewDashboard />;
     }
   };
 

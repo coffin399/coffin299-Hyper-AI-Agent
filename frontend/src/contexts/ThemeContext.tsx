@@ -80,10 +80,33 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         styleOverrides: {
           root: {
             borderRadius: 16,
-            boxShadow: mode === 'dark' 
-              ? '0 8px 32px rgba(0, 0, 0, 0.3)'
-              : '0 8px 32px rgba(0, 0, 0, 0.1)',
-            backdropFilter: 'blur(10px)',
+            boxShadow: mode === 'dark'
+              ? '0 18px 45px rgba(0, 0, 0, 0.6)'
+              : '0 18px 45px rgba(15, 23, 42, 0.18)',
+            backdropFilter: 'blur(18px)',
+            backgroundColor: mode === 'dark'
+              ? 'rgba(15, 15, 25, 0.82)'
+              : 'rgba(255, 255, 255, 0.82)',
+            border: mode === 'dark'
+              ? '1px solid rgba(148, 163, 184, 0.25)'
+              : '1px solid rgba(148, 163, 184, 0.18)',
+          },
+        },
+      },
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            borderRadius: 16,
+            boxShadow: mode === 'dark'
+              ? '0 18px 45px rgba(0, 0, 0, 0.55)'
+              : '0 18px 45px rgba(15, 23, 42, 0.16)',
+            backdropFilter: 'blur(18px)',
+            backgroundColor: mode === 'dark'
+              ? 'rgba(15, 15, 25, 0.78)'
+              : 'rgba(255, 255, 255, 0.86)',
+            border: mode === 'dark'
+              ? '1px solid rgba(148, 163, 184, 0.25)'
+              : '1px solid rgba(148, 163, 184, 0.16)',
           },
         },
       },
@@ -112,9 +135,16 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       MuiDrawer: {
         styleOverrides: {
           paper: {
-            borderRight: mode === 'dark' 
-              ? '1px solid rgba(255, 255, 255, 0.1)'
-              : '1px solid rgba(0, 0, 0, 0.1)',
+            borderRight: mode === 'dark'
+              ? '1px solid rgba(148, 163, 184, 0.35)'
+              : '1px solid rgba(148, 163, 184, 0.24)',
+            backgroundColor: mode === 'dark'
+              ? 'rgba(8, 8, 15, 0.9)'
+              : 'rgba(255, 255, 255, 0.88)',
+            backdropFilter: 'blur(20px)',
+            boxShadow: mode === 'dark'
+              ? '0 0 40px rgba(0, 0, 0, 0.8)'
+              : '0 0 32px rgba(15, 23, 42, 0.35)',
           },
         },
       },
