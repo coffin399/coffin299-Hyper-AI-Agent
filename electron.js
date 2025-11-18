@@ -9,6 +9,8 @@ let backendPort = 18000;
 let backendMode = 'local'; // 'local' or 'network'
 let networkApiUrl = '';
 
+const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
+
 // Load user settings
 function loadSettings() {
   const settingsPath = path.join(app.getPath('userData'), 'settings.json');
@@ -46,7 +48,8 @@ function startBackend() {
   return new Promise((resolve, reject) => {
     // Platform-specific executable name
     const exeName = process.platform === 'win32' ? 'backend.exe' : 'backend';
-    const backendExe = path.join(__dirname, 'dist', 'backend', exeName);
+    const basePath = isDev ? __dirname : process.resourcesPath;
+    const backendExe = path.join(basePath, 'backend', exeName);
     
     if (!fs.existsSync(backendExe)) {
       console.error('Backend executable not found at:', backendExe);
@@ -150,8 +153,6 @@ function createWindow() {
   });
 
   // Open DevTools in development
-  const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
-  
   if (isDev) {
     mainWindow.webContents.openDevTools();
   }

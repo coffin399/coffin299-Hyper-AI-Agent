@@ -26,6 +26,12 @@
       "dist/**/*",
       "node_modules/**/*"
     ],
+    "extraResources": [
+      {
+        "from": "dist/backend",
+        "to": "backend"
+      }
+    ],
     "directories": {
       "output": "release"
     },
