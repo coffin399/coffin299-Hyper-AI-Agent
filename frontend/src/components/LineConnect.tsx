@@ -22,6 +22,7 @@ import {
   FormControlLabel,
   Avatar,
 } from '@mui/material';
+import LineLogo from '../icons/LINE_logo.png';
 import {
   Chat,
   Login,

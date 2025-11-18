@@ -46,10 +46,28 @@ function startBackend() {
   }
 
   return new Promise((resolve, reject) => {
-    // Platform-specific executable name
-    const exeName = process.platform === 'win32' ? 'backend.exe' : 'backend';
     const basePath = isDev ? __dirname : process.resourcesPath;
-    const backendExe = path.join(basePath, 'backend', exeName);
+
+    let exePath;
+    if (process.platform === 'win32') {
+      exePath = path.join('backend', 'backend.exe');
+    } else if (process.platform === 'darwin') {
+      if (isDev) {
+        exePath = path.join('backend', 'backend');
+      } else {
+        exePath = path.join(
+          'backend',
+          'Hyper AI Agent Backend.app',
+          'Contents',
+          'MacOS',
+          'Hyper AI Agent Backend'
+        );
+      }
+    } else {
+      exePath = path.join('backend', 'backend');
+    }
+
+    const backendExe = path.join(basePath, exePath);
     
     if (!fs.existsSync(backendExe)) {
       console.error('Backend executable not found at:', backendExe);
@@ -145,11 +163,13 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    icon: path.join(__dirname, 'src', 'icons', 'icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     },
+    autoHideMenuBar: true,
   });
 
   // Open DevTools in development

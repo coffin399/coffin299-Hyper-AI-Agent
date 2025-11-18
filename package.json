@@ -19,9 +19,11 @@
   "build": {
     "appId": "com.coffin299.hyper-ai-agent",
     "productName": "Hyper AI Agent",
+    "icon": "src/icons/icon.png",
     "files": [
       "electron.js",
       "preload.js",
+      "src/icons/**/*",
       "frontend/build/**/*",
       "dist/**/*",
       "node_modules/**/*"

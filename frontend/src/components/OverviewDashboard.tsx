@@ -110,7 +110,6 @@ const OverviewDashboard: React.FC = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
         bgcolor: '#050509',
         color: 'rgba(255,255,255,0.9)',
         p: 3,
