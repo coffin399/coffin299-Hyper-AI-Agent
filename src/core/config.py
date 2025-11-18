@@ -132,6 +132,8 @@ class Settings(BaseSettings):
 
     # Unsafe execution (advanced / self-hosted only)
     enable_unsafe_exec: bool = False
+    # Global developer mode flag for enabling advanced, potentially unsafe features
+    developer_mode: bool = False
 
     class Config:
         env_file = ".env"

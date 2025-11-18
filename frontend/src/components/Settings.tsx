@@ -13,6 +13,7 @@ import {
   Button,
   Alert,
   Divider,
+  Switch,
 } from '@mui/material';
 import { Settings as SettingsIcon, Save, Refresh } from '@mui/icons-material';
 import type { Settings as SettingsType } from '../types/electron';
@@ -22,6 +23,7 @@ const Settings: React.FC = () => {
     backendMode: 'local',
     backendPort: 18000,
     networkApiUrl: '',
+    developerMode: false,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -192,6 +194,44 @@ const Settings: React.FC = () => {
             <strong>Network Mode:</strong> The backend runs on a remote server. 
             This allows multiple users to share the same backend or use a more powerful server.
           </Typography>
+        </CardContent>
+      </Card>
+
+      <Card sx={{ mt: 3 }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Developer Mode (Advanced)
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Enable this only in trusted, self-hosted environments. When combined with the
+            backend setting <code>ENABLE_UNSAFE_EXEC=true</code>, workflows will be able to
+            execute arbitrary Python and JavaScript code nodes. This can run any code with
+            your user permissions.
+          </Typography>
+
+          <FormControlLabel
+            control={
+              <Switch
+                checked={settings.developerMode}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    developerMode: e.target.checked,
+                  })
+                }
+                color="error"
+              />
+            }
+            label={
+              <Box>
+                <Typography variant="body1">Enable Developer Mode</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  When enabled (and the backend allows unsafe execution), AI workflows can
+                  include Python/JavaScript execution nodes. Use at your own risk.
+                </Typography>
+              </Box>
+            }
+          />
         </CardContent>
       </Card>
     </Box>

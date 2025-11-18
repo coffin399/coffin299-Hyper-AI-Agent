@@ -9,6 +9,7 @@ export interface Settings {
   backendMode: 'local' | 'network';
   backendPort: number;
   networkApiUrl: string;
+  developerMode: boolean;
 }
 
 export interface ElectronAPI {

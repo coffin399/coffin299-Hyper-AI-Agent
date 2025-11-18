@@ -8,6 +8,7 @@ let backendProcess = null;
 let backendPort = 18000;
 let backendMode = 'local'; // 'local' or 'network'
 let networkApiUrl = '';
+let developerMode = false;
 
 const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
 
@@ -20,7 +21,8 @@ function loadSettings() {
       backendMode = settings.backendMode || 'local';
       backendPort = settings.backendPort || 18000;
       networkApiUrl = settings.networkApiUrl || '';
-      console.log('Loaded settings:', { backendMode, backendPort, networkApiUrl });
+      developerMode = !!settings.developerMode;
+      console.log('Loaded settings:', { backendMode, backendPort, networkApiUrl, developerMode });
     } catch (err) {
       console.error('Failed to load settings:', err);
     }
@@ -79,6 +81,10 @@ function startBackend() {
     backendProcess = spawn(backendExe, ['--port', backendPort.toString()], {
       stdio: ['ignore', 'pipe', 'pipe'],
       detached: false,
+      env: {
+        ...process.env,
+        DEVELOPER_MODE: developerMode ? 'true' : 'false',
+      },
     });
 
     backendProcess.stdout.on('data', (data) => {
@@ -208,6 +214,7 @@ ipcMain.handle('get-settings', () => {
     backendMode,
     backendPort,
     networkApiUrl,
+    developerMode,
   };
 });
 
@@ -215,6 +222,7 @@ ipcMain.handle('save-settings', (event, settings) => {
   backendMode = settings.backendMode || 'local';
   backendPort = settings.backendPort || 18000;
   networkApiUrl = settings.networkApiUrl || '';
+   developerMode = !!settings.developerMode;
   saveSettings(settings);
   return { success: true };
 });

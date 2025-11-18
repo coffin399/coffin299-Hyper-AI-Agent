@@ -295,14 +295,15 @@ class WorkflowService:
     async def _execute_python_node(self, node_id: str, config: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, Any]:
         """Execute arbitrary Python code in a restricted environment.
 
-        This is intentionally gated behind the `enable_unsafe_exec` setting and is
-        intended only for trusted, self-hosted environments.
+        This is intentionally gated behind both the `enable_unsafe_exec` and
+        `developer_mode` settings and is intended only for trusted, self-hosted
+        environments.
         """
 
-        if not self.settings.enable_unsafe_exec:
+        if not (self.settings.enable_unsafe_exec and self.settings.developer_mode):
             return {
                 "success": False,
-                "error": "Python execution is disabled. Set enable_unsafe_exec=True to allow it.",
+                "error": "Python execution is disabled. Set ENABLE_UNSAFE_EXEC=true and DEVELOPER_MODE=true to allow it.",
             }
 
         code = config.get("code") or config.get("source")
@@ -358,14 +359,14 @@ class WorkflowService:
     async def _execute_js_node(self, node_id: str, config: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, Any]:
         """Execute JavaScript code via a Node.js subprocess.
 
-        Also gated behind `enable_unsafe_exec` and intended for trusted environments
-        where Node.js is available on the PATH.
+        Also gated behind `enable_unsafe_exec` and `developer_mode`, and intended
+        for trusted environments where Node.js is available on the PATH.
         """
 
-        if not self.settings.enable_unsafe_exec:
+        if not (self.settings.enable_unsafe_exec and self.settings.developer_mode):
             return {
                 "success": False,
-                "error": "JavaScript execution is disabled. Set enable_unsafe_exec=True to allow it.",
+                "error": "JavaScript execution is disabled. Set ENABLE_UNSAFE_EXEC=true and DEVELOPER_MODE=true to allow it.",
             }
 
         code = config.get("code") or config.get("source")
