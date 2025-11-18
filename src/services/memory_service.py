@@ -1,14 +1,12 @@
 from __future__ import annotations
 
 import asyncio
+import re
 from dataclasses import dataclass
 from typing import Iterable, List, Optional
 
-import numpy as np
-
 from ..core.models import MemoryRecord
 from .conversation_service import ConversationService, conversation_service
-from .embedding_service import EmbeddingService, embedding_service
 
 
 @dataclass
@@ -24,10 +22,8 @@ class MemoryService:
     def __init__(
         self,
         convo_service: ConversationService | None = None,
-        embed_service: EmbeddingService | None = None,
     ) -> None:
         self.conversation_service = convo_service or conversation_service
-        self.embedding_service = embed_service or embedding_service
 
     async def add_memory(
         self,
@@ -37,14 +33,11 @@ class MemoryService:
         tags: Optional[Iterable[str]] = None,
         metadata: Optional[dict] = None,
     ) -> MemoryRecord:
-        vectors = await asyncio.to_thread(self.embedding_service.embed, [content])
-        vector = vectors[0]
-        embedding_blob = self.embedding_service.to_bytes(vector)
         return await self.conversation_service.store_memory(
             project_id=project_id,
             content=content,
             summary=summary,
-            embedding=embedding_blob,
+            embedding=None,
             tags=tags,
             metadata=metadata,
         )
@@ -58,16 +51,14 @@ class MemoryService:
     ) -> List[MemoryMatch]:
         if not query.strip():
             return []
-        query_vector_list = await asyncio.to_thread(self.embedding_service.embed, [query])
-        query_vector: np.ndarray = query_vector_list[0]
 
         records = await self.conversation_service.list_memories(project_id=project_id)
         scored: List[MemoryMatch] = []
         for record in records:
-            if not record.embedding:
+            text = (record.summary or record.content or "").strip()
+            if not text:
                 continue
-            vector = self.embedding_service.from_bytes(record.embedding)
-            score = self.embedding_service.cosine_similarity(query_vector, vector)
+            score = self._score_plain(query, text)
             if score < min_score:
                 continue
             metadata = self._deserialize_metadata(record)
@@ -107,6 +98,20 @@ class MemoryService:
             return json.loads(record.metadata_json)
         except Exception:  # pragma: no cover - defensive
             return None
+
+    @staticmethod
+    def _score_plain(query: str, text: str) -> float:
+        """Compute a simple similarity between query and text based on token overlap.
+
+        Score is Jaccard similarity over lowercased word tokens.
+        """
+        query_tokens = set(re.findall(r"\w+", query.lower()))
+        text_tokens = set(re.findall(r"\w+", text.lower()))
+        if not query_tokens or not text_tokens:
+            return 0.0
+        intersection = len(query_tokens & text_tokens)
+        union = len(query_tokens | text_tokens)
+        return intersection / union
 
 
 memory_service = MemoryService()

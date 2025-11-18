@@ -27,7 +27,6 @@ langgraph-sdk==0.1.37
 openai
 anthropic
 google-genai
-sentence-transformers==3.2.0; sys_platform != "darwin" or platform_machine != "arm64"
 ollama
 
 # Keystore
