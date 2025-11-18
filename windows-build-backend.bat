@@ -108,7 +108,7 @@ if errorlevel 1 (
 REM -----------------------------------------------------------------------------
 REM Step 5: Move backend.exe into a stable output directory
 REM -----------------------------------------------------------------------------
-set "APP_PATH=windows\Hyper AI Agent Backend\app\Hyper AI Agent Backend.exe"
+set "APP_PATH=build\hyper-ai-agent-backend\windows\app\src\hyper-ai-agent-backend.exe"
 if exist "%APP_PATH%" (
     mkdir dist\backend 2>nul
     copy /y "%APP_PATH%" dist\backend\backend.exe >nul

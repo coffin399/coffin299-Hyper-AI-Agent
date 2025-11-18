@@ -207,13 +207,13 @@ jobs:
           briefcase create windows
           briefcase build windows -u
 
-          $appPath = "windows\Hyper AI Agent Backend\app\Hyper AI Agent Backend.exe"
-          if (-not (Test-Path $appPath)) {
-            throw "Backend executable not found: $appPath"
+          $exe = Get-ChildItem -Path "build\hyper-ai-agent-backend" -Filter "hyper-ai-agent-backend.exe" -Recurse -File -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $exe) {
+            throw "Backend executable not found in Briefcase build output"
           }
 
           New-Item -ItemType Directory -Force -Path "dist\backend" | Out-Null
-          Copy-Item -Path $appPath -Destination "dist\backend\backend.exe" -Force
+          Copy-Item -Path $exe.FullName -Destination "dist\backend\backend.exe" -Force
         shell: pwsh
 
       - name: Build Backend with Briefcase (Linux)

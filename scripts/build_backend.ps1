@@ -27,7 +27,7 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
-$appPath = "windows\Hyper AI Agent Backend\app\Hyper AI Agent Backend.exe"
+$appPath = "build\hyper-ai-agent-backend\windows\app\src\hyper-ai-agent-backend.exe"
 if (-not (Test-Path $appPath)) {
     Write-Host "Backend executable not found: $appPath" -ForegroundColor Red
     exit 1
