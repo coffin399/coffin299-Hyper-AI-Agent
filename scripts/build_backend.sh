@@ -34,10 +34,9 @@ elif [ "$PLATFORM" = "Linux" ]; then
     briefcase create linux
     briefcase build linux -u
 
-    APP_DIR="linux/Hyper AI Agent Backend/app"
-    BIN="$APP_DIR/Hyper AI Agent Backend"
-    if [ ! -f "$BIN" ]; then
-        echo "Backend binary not found: $BIN"
+    BIN="$(find build/hyper-ai-agent-backend -type f -name hyper-ai-agent-backend -path '*usr/bin/*' -print -quit)"
+    if [ -z "$BIN" ] || [ ! -f "$BIN" ]; then
+        echo "Backend binary not found in Briefcase build output"
         exit 1
     fi
 
