@@ -23,7 +23,6 @@ import {
   IconButton,
   Grid,
   Paper,
-  Drawer,
   InputAdornment,
   Menu,
   MenuItem as MenuItemComponent,
