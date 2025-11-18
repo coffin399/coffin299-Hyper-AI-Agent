@@ -28,10 +28,6 @@ import {
   ChevronRight,
 } from '@mui/icons-material';
 
-import LineLogo from '../icons/LINE_logo.png';
-import DiscordLogo from '../icons/Discord_logo.png';
-import SlackLogo from '../icons/Slack_logo.png';
-
 interface NavigationProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
@@ -48,9 +44,9 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, open, o
     { id: 'models', label: 'モデル管理', icon: <SmartToy /> },
     { id: 'flows', label: '自動フロー', icon: <ChatBubble /> },
     { id: 'google', label: 'Google連携', icon: <Cloud /> },
-    { id: 'discord', label: 'Discord連携', icon: <Avatar src={DiscordLogo} alt="Discord" sx={{ width: 24, height: 24 }} /> },
-    { id: 'line', label: 'LINE連携', icon: <Avatar src={LineLogo} alt="LINE" sx={{ width: 24, height: 24 }} /> },
-    { id: 'slack', label: 'Slack連携', icon: <Avatar src={SlackLogo} alt="Slack" sx={{ width: 24, height: 24 }} /> },
+    { id: 'discord', label: 'Discord連携', icon: <Avatar src="icons/Discord_logo.png" alt="Discord" sx={{ width: 24, height: 24 }} /> },
+    { id: 'line', label: 'LINE連携', icon: <Avatar src="icons/LINE_logo.png" alt="LINE" sx={{ width: 24, height: 24 }} /> },
+    { id: 'slack', label: 'Slack連携', icon: <Avatar src="icons/Slack_logo.png" alt="Slack" sx={{ width: 24, height: 24 }} /> },
     { id: 'docs', label: 'AIドキュメント', icon: <Description /> },
     { id: 'roles', label: 'AIロール', icon: <Person /> },
     { id: 'media', label: 'AIメディア', icon: <VideoLibrary /> },

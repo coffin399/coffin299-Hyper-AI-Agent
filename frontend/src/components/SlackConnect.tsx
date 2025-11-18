@@ -17,7 +17,6 @@ import {
   Divider,
 } from '@mui/material';
 import { CheckCircle, Error, Link, Notifications } from '@mui/icons-material';
-import SlackLogo from '../icons/Slack_logo.png';
 
 interface SlackConnectProps {
   onConnect?: () => void;
@@ -80,7 +79,7 @@ const SlackConnect: React.FC<SlackConnectProps> = ({ onConnect, onDisconnect }) 
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
             <Box
               component="img"
-              src={SlackLogo}
+              src="icons/Slack_logo.png"
               alt="Slack"
               sx={{ width: 32, height: 32, mr: 2, borderRadius: 1 }}
             />
