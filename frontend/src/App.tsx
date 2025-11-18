@@ -17,6 +17,7 @@ import AIFlows from './components/AIFlows';
 import AIOCR from './components/AIOCR';
 import Settings from './components/Settings';
 import './App.css';
+import './utils/apiClient';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');

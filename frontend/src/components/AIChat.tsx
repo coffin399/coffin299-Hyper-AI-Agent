@@ -291,14 +291,16 @@ const AIChat: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
+    <Box sx={{ display: 'flex', height: '100%' }}>
       {/* サイドバー */}
-      <Drawer
-        variant="permanent"
+      <Box
         sx={{
           width: 300,
           flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: 300, boxSizing: 'border-box' },
+          borderRight: '1px solid',
+          borderColor: 'divider',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <Box sx={{ px: 3, py: 2 }}>
@@ -341,7 +343,7 @@ const AIChat: React.FC = () => {
             </ListItem>
           ))}
         </List>
-      </Drawer>
+      </Box>
 
       {/* メインコンテンツ */}
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>

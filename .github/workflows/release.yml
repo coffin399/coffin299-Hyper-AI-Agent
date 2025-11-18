@@ -25,7 +25,7 @@ on:
       build_backend:
         description: "Build backend with Briefcase"
         required: false
-        default: false
+        default: true
         type: boolean
       desktop_os:
         description: "Desktop OS target for Electron builds"
@@ -197,12 +197,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: dist/backend
-          key: ${{ runner.os }}-backend-${{ hashFiles('requirements.txt', 'src/**/*.py') }}
+          key: ${{ runner.os }}-backend-v2-${{ hashFiles('requirements.txt', 'src/**/*.py') }}
           restore-keys: |
-            ${{ runner.os }}-backend-
+            ${{ runner.os }}-backend-v2-
 
       - name: Build Backend with Briefcase (Windows)
-        if: github.event_name == 'workflow_dispatch' && inputs.build_backend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'windows') && matrix.os == 'windows-latest' && steps.cache-backend.outputs.cache-hit != 'true'
+        if: github.event_name == 'workflow_dispatch' && (inputs.desktop_os == 'all' || inputs.desktop_os == 'windows') && matrix.os == 'windows-latest' && steps.cache-backend.outputs.cache-hit != 'true'
         run: |
           briefcase create windows
           briefcase build windows -u
@@ -217,7 +217,7 @@ jobs:
         shell: pwsh
 
       - name: Build Backend with Briefcase (Linux)
-        if: github.event_name == 'workflow_dispatch' && inputs.build_backend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'linux') && matrix.os == 'ubuntu-latest' && steps.cache-backend.outputs.cache-hit != 'true'
+        if: github.event_name == 'workflow_dispatch' && (inputs.desktop_os == 'all' || inputs.desktop_os == 'linux') && matrix.os == 'ubuntu-latest' && steps.cache-backend.outputs.cache-hit != 'true'
         run: |
           briefcase create linux
           briefcase build linux -u
@@ -233,7 +233,7 @@ jobs:
           chmod +x dist/backend/backend
 
       - name: Build Backend with Briefcase (macOS)
-        if: github.event_name == 'workflow_dispatch' && inputs.build_backend && (inputs.desktop_os == 'all' || inputs.desktop_os == 'macos') && matrix.os == 'macos-latest' && steps.cache-backend.outputs.cache-hit != 'true'
+        if: github.event_name == 'workflow_dispatch' && (inputs.desktop_os == 'all' || inputs.desktop_os == 'macos') && matrix.os == 'macos-latest' && steps.cache-backend.outputs.cache-hit != 'true'
         run: |
           briefcase create macOS
           briefcase build macOS -u

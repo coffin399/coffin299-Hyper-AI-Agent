@@ -3,12 +3,24 @@
 
 let apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:18000';
 
-// Listen for backend config from Electron
-if (window.electronAPI) {
-  window.electronAPI.onBackendConfig((config: { mode: string; apiBaseUrl: string }) => {
-    console.log('Received backend config:', config);
-    apiBaseUrl = config.apiBaseUrl;
-  });
+// Listen for backend config from Electron and patch fetch for relative /api calls
+if (typeof window !== 'undefined') {
+  if (window.electronAPI) {
+    window.electronAPI.onBackendConfig((config: { mode: string; apiBaseUrl: string }) => {
+      console.log('Received backend config:', config);
+      apiBaseUrl = config.apiBaseUrl;
+    });
+  }
+
+  // Patch global fetch so that calls like fetch('/api/...') automatically use apiBaseUrl
+  const originalFetch = window.fetch.bind(window);
+  window.fetch = (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+    let requestUrl = input;
+    if (typeof input === 'string' && input.startsWith('/api/')) {
+      requestUrl = `${apiBaseUrl}${input}`;
+    }
+    return originalFetch(requestUrl as any, init);
+  };
 }
 
 /**
@@ -35,12 +47,17 @@ export async function apiRequest<T = any>(
   const url = `${apiBaseUrl}${endpoint}`;
   
   try {
+    const isFormData = options?.body instanceof FormData;
+    const headers = isFormData
+      ? options?.headers
+      : {
+          'Content-Type': 'application/json',
+          ...options?.headers,
+        };
+
     const response = await fetch(url, {
       ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
+      headers,
     });
 
     if (!response.ok) {
