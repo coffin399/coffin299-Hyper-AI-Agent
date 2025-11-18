@@ -56,7 +56,7 @@ echo "[INFO] Building backend with Briefcase (macOS)..."
 briefcase create macOS
 briefcase build macOS -u
 
-APP="macOS/Hyper AI Agent Backend.app/Contents/MacOS/Hyper AI Agent Backend"
+APP="build/hyper-ai-agent-backend/macos/app/Hyper AI Agent Backend.app/Contents/MacOS/Hyper AI Agent Backend"
 if [ ! -f "$APP" ]; then
   echo "[ERROR] Backend binary not found: $APP"
   exit 1
