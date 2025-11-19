@@ -44,3 +44,11 @@ async def session_scope() -> AsyncIterator[AsyncSession]:
         raise
     finally:
         await session.close()
+
+
+async def init_db() -> None:
+    """Initialize the database by creating all tables."""
+    engine = get_engine()
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
