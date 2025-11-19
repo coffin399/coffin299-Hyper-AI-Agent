@@ -30,6 +30,7 @@ class ProviderType(str, enum.Enum):
     GROK = "grok"
     OPENROUTER = "openrouter"
     NVIDIA_NIM = "nvidia_nim"
+    NATIVE_LOCAL = "native_local"
 
 
 class ToolType(str, enum.Enum):
@@ -262,7 +263,7 @@ class UsageRecord(Base):
     tokens_prompt: Mapped[int] = mapped_column(Integer, default=0)
     tokens_completion: Mapped[int] = mapped_column(Integer, default=0)
     total_cost: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
-    metadata: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    usage_metadata: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     project: Mapped[Project] = relationship("Project", back_populates="usage_records")

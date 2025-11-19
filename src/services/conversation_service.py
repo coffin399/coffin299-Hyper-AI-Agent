@@ -191,7 +191,7 @@ class ConversationService:
                 tokens_prompt=tokens_prompt,
                 tokens_completion=tokens_completion,
                 total_cost=total_cost,
-                metadata=metadata,
+                usage_metadata=metadata,
             )
             session.add(record)
             await session.flush()

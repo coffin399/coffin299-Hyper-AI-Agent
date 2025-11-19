@@ -126,6 +126,18 @@ class Settings(BaseSettings):
     
     # Provider base URLs
     ollama_base_url: str = "http://localhost:11434"
+    
+    # Native Local LLM Configuration
+    local_execution_mode: str = Field("ollama", pattern=r"^(ollama|native)$")
+    native_model_path: Optional[str] = None
+    native_gpu_layers: int = Field(-1, description="Number of layers to offload to GPU. -1 for all.")
+    native_main_gpu: int = 0
+    native_use_mmap: bool = True
+    native_use_mlock: bool = False
+    native_n_ctx: int = 2048
+    native_n_batch: int = 512
+    native_n_threads: Optional[int] = None
+
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
     nvidia_nim_base_url: str = "https://integrate.api.nvidia.com/v1"
 

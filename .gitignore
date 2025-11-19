@@ -105,6 +105,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+venv_native/
+*.gguf
 
 # Docker
 .env.docker

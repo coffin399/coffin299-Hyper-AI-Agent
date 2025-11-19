@@ -9,6 +9,8 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 
+from sqlalchemy import select
+
 from ..core.config import get_settings
 from ..core.database import session_scope
 from ..core.models import AutomationActionType, AutomationRule, AutomationTriggerType
@@ -26,10 +28,12 @@ class AutomationService:
         self.scheduler = AsyncIOScheduler(timezone="UTC")
         self.file_observers: Dict[int, Observer] = {}
         self._running = False
+        self._loop: asyncio.AbstractEventLoop | None = None
 
     async def start(self) -> None:
         if self._running:
             return
+        self._loop = asyncio.get_running_loop()
         await self._load_rules()
         self.scheduler.start()
         self._running = True
@@ -101,7 +105,10 @@ class AutomationService:
                 path = rule.trigger_config.get("path")
                 if not path:
                     return
-                handler = _FileWatchHandler(rule, self._execute_rule)
+                if self._loop is None:
+                    logger.warning("Cannot schedule file watch rule %s: loop not captured", rule.id)
+                    return
+                handler = _FileWatchHandler(rule, self._execute_rule, self._loop)
                 observer = Observer()
                 observer.schedule(handler, str(path), recursive=True)
                 observer.start()
@@ -134,14 +141,15 @@ class AutomationService:
 
 
 class _FileWatchHandler(FileSystemEventHandler):
-    def __init__(self, rule: AutomationRule, executor) -> None:
+    def __init__(self, rule: AutomationRule, executor, loop: asyncio.AbstractEventLoop) -> None:
         self.rule = rule
         self.executor = executor
+        self.loop = loop
 
     def on_any_event(self, event: FileSystemEvent) -> None:
         if event.is_directory:
             return
-        asyncio.create_task(self.executor(self.rule))
+        asyncio.run_coroutine_threadsafe(self.executor(self.rule), self.loop)
 
 
 automation_service = AutomationService()

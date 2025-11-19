@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from typing import Dict, Type
 
+from ..core.config import get_settings
 from ..core.models import ProviderType
 from .anthropic_provider import AnthropicProvider
 from .base import ChatProvider
 from .gemini_provider import GeminiProvider
 from .grok_provider import GrokProvider
+from .native_local_provider import NativeLocalProvider
 from .nvidia_nim_provider import NvidiaNimProvider
 from .ollama_provider import OllamaProvider
 from .openai_provider import OpenAIProvider
@@ -20,10 +22,17 @@ PROVIDER_CLASSES: Dict[ProviderType, Type[ChatProvider]] = {
     ProviderType.GROK: GrokProvider,
     ProviderType.OPENROUTER: OpenRouterProvider,
     ProviderType.NVIDIA_NIM: NvidiaNimProvider,
+    ProviderType.NATIVE_LOCAL: NativeLocalProvider,
 }
 
 
 def get_provider(provider: ProviderType, model_name: str | None = None) -> ChatProvider:
+    # Intercept OLLAMA requests if native mode is enabled
+    if provider == ProviderType.OLLAMA:
+        settings = get_settings()
+        if settings.local_execution_mode == "native":
+            return NativeLocalProvider(model_name=model_name)
+
     provider_cls = PROVIDER_CLASSES.get(provider)
     if not provider_cls:
         raise ValueError(f"Unknown provider: {provider}")
