@@ -48,44 +48,65 @@ function startBackend() {
   }
 
   return new Promise((resolve, reject) => {
-    const basePath = isDev ? __dirname : process.resourcesPath;
-
-    let exePath;
-    if (process.platform === 'win32') {
-      exePath = path.join('backend', 'backend.exe');
-    } else if (process.platform === 'darwin') {
-      if (isDev) {
-        exePath = path.join('backend', 'backend');
-      } else {
-        exePath = path.join(
-          'backend',
-          'Hyper AI Agent Backend.app',
-          'Contents',
-          'MacOS',
-          'Hyper AI Agent Backend'
-        );
-      }
-    } else {
-      exePath = path.join('backend', 'backend');
-    }
-
-    const backendExe = path.join(basePath, exePath);
-    
-    if (!fs.existsSync(backendExe)) {
-      console.error('Backend executable not found at:', backendExe);
-      reject(new Error('Backend executable not found. Please build the backend first.'));
-      return;
-    }
-
-    console.log('Starting backend process:', backendExe);
-    backendProcess = spawn(backendExe, ['--port', backendPort.toString()], {
+    let command;
+    let args;
+    let options = {
       stdio: ['ignore', 'pipe', 'pipe'],
       detached: false,
       env: {
         ...process.env,
         DEVELOPER_MODE: developerMode ? 'true' : 'false',
       },
-    });
+    };
+
+    // Check for venv in dev mode to run from source
+    const venvPython = process.platform === 'win32'
+      ? path.join(__dirname, 'venv', 'Scripts', 'python.exe')
+      : path.join(__dirname, 'venv', 'bin', 'python');
+
+    if (isDev && fs.existsSync(venvPython)) {
+      console.log('Starting backend from source using venv:', venvPython);
+      command = venvPython;
+      args = ['-m', 'src.main', '--port', backendPort.toString()];
+      options.cwd = __dirname;
+      options.env.PYTHONPATH = __dirname;
+    } else {
+      // Production or no venv: try to find the executable
+      const basePath = isDev ? __dirname : process.resourcesPath;
+      let exePath;
+
+      if (process.platform === 'win32') {
+        exePath = path.join('backend', 'backend.exe');
+      } else if (process.platform === 'darwin') {
+        if (isDev) {
+          exePath = path.join('backend', 'backend');
+        } else {
+          exePath = path.join(
+            'backend',
+            'Hyper AI Agent Backend.app',
+            'Contents',
+            'MacOS',
+            'Hyper AI Agent Backend'
+          );
+        }
+      } else {
+        exePath = path.join('backend', 'backend');
+      }
+
+      const backendExe = path.join(basePath, exePath);
+
+      if (!fs.existsSync(backendExe)) {
+        console.error('Backend executable not found at:', backendExe);
+        reject(new Error('Backend executable not found. Please build the backend first.'));
+        return;
+      }
+
+      console.log('Starting backend process:', backendExe);
+      command = backendExe;
+      args = ['--port', backendPort.toString()];
+    }
+
+    backendProcess = spawn(command, args, options);
 
     backendProcess.stdout.on('data', (data) => {
       console.log('[Backend]', data.toString());
@@ -119,12 +140,12 @@ function startBackend() {
 function checkBackendHealth(maxRetries = 10, retryDelay = 1000) {
   return new Promise((resolve, reject) => {
     let retries = 0;
-    
+
     const check = () => {
-      const url = backendMode === 'local' 
+      const url = backendMode === 'local'
         ? `http://127.0.0.1:${backendPort}/docs`
         : `${networkApiUrl}/docs`;
-      
+
       http.get(url, (res) => {
         if (res.statusCode === 200) {
           resolve();
@@ -135,7 +156,7 @@ function checkBackendHealth(maxRetries = 10, retryDelay = 1000) {
         retry();
       });
     };
-    
+
     const retry = () => {
       retries++;
       if (retries >= maxRetries) {
@@ -144,7 +165,7 @@ function checkBackendHealth(maxRetries = 10, retryDelay = 1000) {
         setTimeout(check, retryDelay);
       }
     };
-    
+
     check();
   });
 }
@@ -154,7 +175,7 @@ function stopBackend() {
   if (backendProcess) {
     console.log('Stopping backend process...');
     backendProcess.kill('SIGTERM');
-    
+
     // Force kill after 5 seconds if still running
     setTimeout(() => {
       if (backendProcess) {
@@ -187,7 +208,7 @@ function createWindow() {
   const apiBaseUrl = backendMode === 'local'
     ? `http://127.0.0.1:${backendPort}`
     : networkApiUrl;
-  
+
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.webContents.send('backend-config', {
       mode: backendMode,
@@ -222,7 +243,7 @@ ipcMain.handle('save-settings', (event, settings) => {
   backendMode = settings.backendMode || 'local';
   backendPort = settings.backendPort || 18000;
   networkApiUrl = settings.networkApiUrl || '';
-   developerMode = !!settings.developerMode;
+  developerMode = !!settings.developerMode;
   saveSettings(settings);
   return { success: true };
 });
@@ -230,7 +251,7 @@ ipcMain.handle('save-settings', (event, settings) => {
 // App lifecycle
 app.whenReady().then(async () => {
   loadSettings();
-  
+
   try {
     await startBackend();
     createWindow();

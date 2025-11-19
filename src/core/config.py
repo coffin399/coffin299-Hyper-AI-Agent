@@ -95,10 +95,10 @@ class Settings(BaseSettings):
     """Application-level settings loaded from environment variables."""
 
     app_name: str = "Hyper AI Agent"
-    environment: str = Field("development", regex=r"^(development|staging|production)$")
+    environment: str = Field("development", pattern=r"^(development|staging|production)$")
     
     # Backend mode: "local" (bundled) or "network" (remote API)
-    backend_mode: str = Field("local", regex=r"^(local|network)$")
+    backend_mode: str = Field("local", pattern=r"^(local|network)$")
     backend_port: int = Field(18000, ge=1024, le=65535)
     network_api_url: str = Field("", description="API base URL when backend_mode=network")
 
