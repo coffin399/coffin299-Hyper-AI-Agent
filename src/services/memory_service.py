@@ -7,6 +7,7 @@ from typing import Iterable, List, Optional
 
 from ..core.models import MemoryRecord
 from .conversation_service import ConversationService, conversation_service
+from .embedding_service import embedding_service
 
 
 @dataclass
@@ -33,14 +34,47 @@ class MemoryService:
         tags: Optional[Iterable[str]] = None,
         metadata: Optional[dict] = None,
     ) -> MemoryRecord:
+        text_for_embedding = (summary or content or "").strip()
+        embedding_bytes: Optional[bytes] = None
+        if text_for_embedding:
+            try:
+                vectors = embedding_service.embed([text_for_embedding])
+                if vectors:
+                    embedding_bytes = embedding_service.to_bytes(vectors[0])
+            except Exception:
+                embedding_bytes = None
+
         return await self.conversation_service.store_memory(
             project_id=project_id,
             content=content,
             summary=summary,
-            embedding=None,
+            embedding=embedding_bytes,
             tags=tags,
             metadata=metadata,
         )
+
+    async def add_document_memories(
+        self,
+        project_id: int,
+        text: str,
+        source: Optional[str] = None,
+        tags: Optional[Iterable[str]] = None,
+    ) -> List[MemoryRecord]:
+        chunks = self._chunk_text(text)
+        records: List[MemoryRecord] = []
+        for index, chunk in enumerate(chunks):
+            chunk_metadata = {"type": "document", "chunk_index": index}
+            if source:
+                chunk_metadata["source"] = source
+            record = await self.add_memory(
+                project_id=project_id,
+                content=chunk,
+                summary=None,
+                tags=tags,
+                metadata=chunk_metadata,
+            )
+            records.append(record)
+        return records
 
     async def search_memories(
         self,
@@ -54,15 +88,39 @@ class MemoryService:
 
         records = await self.conversation_service.list_memories(project_id=project_id)
         scored: List[MemoryMatch] = []
-        for record in records:
-            text = (record.summary or record.content or "").strip()
-            if not text:
-                continue
-            score = self._score_plain(query, text)
-            if score < min_score:
-                continue
-            metadata = self._deserialize_metadata(record)
-            scored.append(MemoryMatch(record=record, score=score, metadata=metadata))
+        use_embeddings = False
+        query_vector = None
+        try:
+            vectors = embedding_service.embed([query])
+            if vectors:
+                query_vector = vectors[0]
+                use_embeddings = True
+        except Exception:
+            use_embeddings = False
+
+        if use_embeddings and query_vector is not None:
+            for record in records:
+                if not record.embedding:
+                    continue
+                try:
+                    vector = embedding_service.from_bytes(record.embedding)
+                except Exception:
+                    continue
+                score = embedding_service.cosine_similarity(query_vector, vector)
+                if score < min_score:
+                    continue
+                metadata = self._deserialize_metadata(record)
+                scored.append(MemoryMatch(record=record, score=score, metadata=metadata))
+        else:
+            for record in records:
+                text = (record.summary or record.content or "").strip()
+                if not text:
+                    continue
+                score = self._score_plain(query, text)
+                if score < min_score:
+                    continue
+                metadata = self._deserialize_metadata(record)
+                scored.append(MemoryMatch(record=record, score=score, metadata=metadata))
 
         scored.sort(key=lambda m: m.score, reverse=True)
         return scored[:top_k]
@@ -112,6 +170,24 @@ class MemoryService:
         intersection = len(query_tokens & text_tokens)
         union = len(query_tokens | text_tokens)
         return intersection / union
+
+    @staticmethod
+    def _chunk_text(text: str, max_chars: int = 1000, overlap: int = 200) -> List[str]:
+        cleaned = text.replace("\r\n", "\n").replace("\r", "\n")
+        if not cleaned:
+            return []
+        chunks: List[str] = []
+        start = 0
+        length = len(cleaned)
+        while start < length:
+            end = min(start + max_chars, length)
+            segment = cleaned[start:end].strip()
+            if segment:
+                chunks.append(segment)
+            if end >= length:
+                break
+            start = max(end - overlap, 0)
+        return chunks
 
 
 memory_service = MemoryService()

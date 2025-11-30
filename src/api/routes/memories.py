@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, UploadFile, File
 from pydantic import BaseModel, Field
 from typing import Any, Dict, List, Optional
 
 from ...services.memory_service import MemoryMatch, memory_service
+from ...services.ocr_service import ocr_service
 
 router = APIRouter(prefix="/memories", tags=["memories"])
 
@@ -103,5 +104,63 @@ async def list_memories(project_id: int, limit: Optional[int] = Query(None)):
             )
             for record in records
         ]
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@router.post("/ingest-file", response_model=List[MemoryResponse])
+async def ingest_file(
+    project_id: int = Query(...),
+    file: UploadFile = File(...),
+    tags: Optional[List[str]] = Query(default=None),
+):
+    try:
+        content = await file.read()
+
+        allowed_types = [
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/pdf",
+            "text/plain",
+        ]
+
+        if file.content_type not in allowed_types:
+            raise HTTPException(status_code=400, detail="Unsupported document format")
+
+        import tempfile
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=f"_{file.filename}") as tmp_file:
+            tmp_file.write(content)
+            file_path = tmp_file.name
+
+        if file.content_type == "application/pdf":
+            ocr_result = await ocr_service.extract_text_from_pdf(file_path)
+            text = ocr_result.get("text", "")
+        else:
+            ocr_result = await ocr_service.extract_text_from_document(file_path, True)
+            text = ocr_result.get("text", "")
+
+        if not text.strip():
+            raise HTTPException(status_code=400, detail="No text content could be extracted from the document")
+
+        records = await memory_service.add_document_memories(
+            project_id=project_id,
+            text=text,
+            source=file.filename,
+            tags=tags,
+        )
+
+        return [
+            MemoryResponse(
+                id=record.id,
+                project_id=record.project_id,
+                content=record.content,
+                summary=record.summary,
+                metadata=memory_service._deserialize_metadata(record),
+                created_at=record.created_at.isoformat(),
+            )
+            for record in records
+        ]
+    except HTTPException:
+        raise
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))

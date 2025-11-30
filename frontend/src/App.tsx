@@ -16,6 +16,7 @@ import AIChat from './components/AIChat';
 import AIFlows from './components/AIFlows';
 import AIOCR from './components/AIOCR';
 import Settings from './components/Settings';
+import KnowledgeRAG from './components/KnowledgeRAG';
 import './App.css';
 import './utils/apiClient';
 
@@ -51,6 +52,8 @@ function App() {
         return <AIOCR />;
       case 'settings':
         return <Settings />;
+      case 'knowledge':
+        return <KnowledgeRAG />;
       case 'dashboard':
       default:
         return <OverviewDashboard />;

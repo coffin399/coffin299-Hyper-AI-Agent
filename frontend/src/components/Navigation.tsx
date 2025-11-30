@@ -26,6 +26,7 @@ import {
   ChatBubble,
   ChevronLeft,
   ChevronRight,
+  LibraryBooks,
 } from '@mui/icons-material';
 
 interface NavigationProps {
@@ -48,6 +49,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, open, o
     { id: 'line', label: 'LINE連携', icon: <Avatar src="icons/LINE_logo.png" alt="LINE" sx={{ width: 24, height: 24 }} /> },
     { id: 'slack', label: 'Slack連携', icon: <Avatar src="icons/Slack_logo.png" alt="Slack" sx={{ width: 24, height: 24 }} /> },
     { id: 'docs', label: 'AIドキュメント', icon: <Description /> },
+    { id: 'knowledge', label: 'ナレッジRAG', icon: <LibraryBooks /> },
     { id: 'roles', label: 'AIロール', icon: <Person /> },
     { id: 'media', label: 'AIメディア', icon: <VideoLibrary /> },
     { id: 'meeting', label: 'AI会議', icon: <MeetingRoom /> },
