@@ -1,52 +1,73 @@
 from __future__ import annotations
 
+import math
 import pickle
-from functools import lru_cache
-from typing import Iterable, List
-
-import numpy as np
-try:
-    from sentence_transformers import SentenceTransformer
-except Exception:
-    SentenceTransformer = None
+import hashlib
+from typing import Iterable, List, Sequence
 
 
-EMBEDDING_MODEL = "all-MiniLM-L6-v2"
-
-
-@lru_cache(maxsize=1)
-def _load_model() -> "SentenceTransformer":  # pragma: no cover - heavy external dependency
-    if SentenceTransformer is None:
-        raise RuntimeError("sentence-transformers is not installed; embedding features are unavailable on this platform.")
-    return SentenceTransformer(EMBEDDING_MODEL)
+EMBEDDING_DIM = 256
 
 
 class EmbeddingService:
-    """Generate and convert embeddings for semantic memory and RAG."""
+    """Generate and convert lightweight embeddings for semantic memory and RAG."""
 
-    def __init__(self, model_name: str = EMBEDDING_MODEL) -> None:
-        self.model_name = model_name
+    def __init__(self, dim: int = EMBEDDING_DIM) -> None:
+        self.dim = dim
 
-    def embed(self, texts: Iterable[str]) -> List[np.ndarray]:
-        model = _load_model()
-        vectors = model.encode(list(texts), convert_to_numpy=True, show_progress_bar=False)
-        return [np.asarray(vector, dtype=np.float32) for vector in vectors]
+    def embed(self, texts: Iterable[str]) -> List[List[float]]:
+        vectors: List[List[float]] = []
+        for text in texts:
+            vectors.append(self._embed_text(text))
+        return vectors
+
+    def _embed_text(self, text: str) -> List[float]:
+        vec = [0.0] * self.dim
+        normalized = (text or "").strip().lower()
+        if not normalized:
+            return vec
+
+        tokens = normalized.split()
+        for token in tokens:
+            h = int(hashlib.md5(token.encode("utf-8")).hexdigest(), 16)
+            idx = h % self.dim
+            vec[idx] += 1.0
+
+            if len(token) > 1:
+                for i in range(len(token) - 1):
+                    bigram = token[i : i + 2]
+                    hb = int(hashlib.sha1(bigram.encode("utf-8")).hexdigest(), 16)
+                    idx_bi = hb % self.dim
+                    vec[idx_bi] += 0.5
+
+        return vec
 
     @staticmethod
-    def to_bytes(vector: np.ndarray) -> bytes:
-        return pickle.dumps(vector.astype(np.float32))
+    def to_bytes(vector: Sequence[float]) -> bytes:
+        return pickle.dumps(list(vector), protocol=pickle.HIGHEST_PROTOCOL)
 
     @staticmethod
-    def from_bytes(blob: bytes) -> np.ndarray:
-        return pickle.loads(blob)
+    def from_bytes(blob: bytes) -> List[float]:
+        obj = pickle.loads(blob)
+        if isinstance(obj, list):
+            return obj
+        if isinstance(obj, tuple):
+            return list(obj)
+        try:
+            return [float(x) for x in obj]
+        except Exception:
+            return []
 
     @staticmethod
-    def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
-        a_norm = np.linalg.norm(a)
-        b_norm = np.linalg.norm(b)
-        if a_norm == 0 or b_norm == 0:
+    def cosine_similarity(a: Sequence[float], b: Sequence[float]) -> float:
+        if not a or not b or len(a) != len(b):
             return 0.0
-        return float(np.dot(a, b) / (a_norm * b_norm))
+        norm_a = math.sqrt(sum(x * x for x in a))
+        norm_b = math.sqrt(sum(y * y for y in b))
+        if norm_a == 0.0 or norm_b == 0.0:
+            return 0.0
+        dot = sum(x * y for x, y in zip(a, b))
+        return float(dot / (norm_a * norm_b))
 
 
 embedding_service = EmbeddingService()

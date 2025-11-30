@@ -462,6 +462,39 @@ jobs:
           name: android-release-apk
           path: artifacts/android/release
 
+      - name: Assemble hyperAgent.zip (all desktop platforms)
+        run: |
+          set -euo pipefail
+
+          bundle_root="artifacts/hyperAgent"
+          rm -rf "$bundle_root"
+          mkdir -p "$bundle_root/windows" "$bundle_root/macos" "$bundle_root/linux"
+
+          echo "Unpacking Windows artifacts..."
+          shopt -s nullglob
+          for z in artifacts/electron/windows/*.zip; do
+            unzip -q "$z" -d "$bundle_root/windows"
+          done
+
+          echo "Unpacking macOS artifacts..."
+          for z in artifacts/electron/macos/*.zip; do
+            unzip -q "$z" -d "$bundle_root/macos"
+          done
+
+          echo "Unpacking Linux artifacts..."
+          for z in artifacts/electron/linux/*.zip; do
+            unzip -q "$z" -d "$bundle_root/linux"
+          done
+
+          echo "Creating hyperAgent.zip bundle..."
+          (
+            cd artifacts
+            rm -f hyperAgent.zip
+            zip -rq hyperAgent.zip hyperAgent
+          )
+
+          echo "✅ Created artifacts/hyperAgent.zip (windows/, macos/, linux/ included)"
+
       - name: Create or Update Release
         uses: softprops/action-gh-release@v1
         with:
@@ -478,6 +511,7 @@ jobs:
             artifacts/electron/linux/*.zip
             artifacts/electron/macos/*.zip
             artifacts/electron/windows/*.zip
+            artifacts/hyperAgent.zip
             artifacts/android/**/*.apk
           draft: false
           prerelease: false
