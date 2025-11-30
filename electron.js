@@ -47,6 +47,49 @@ function startBackend() {
     return Promise.resolve();
   }
 
+  if (isDev) {
+    return new Promise((resolve, reject) => {
+      const pythonCmd = process.env.PYTHON || 'python';
+      const args = ['-m', 'src.main', '--port', backendPort.toString()];
+
+      console.log('Starting backend process (dev, Python):', pythonCmd, args.join(' '));
+      backendProcess = spawn(pythonCmd, args, {
+        cwd: __dirname,
+        stdio: ['ignore', 'pipe', 'pipe'],
+        detached: false,
+        env: {
+          ...process.env,
+          DEVELOPER_MODE: developerMode ? 'true' : 'false',
+        },
+      });
+
+      backendProcess.stdout.on('data', (data) => {
+        console.log('[Backend]', data.toString());
+      });
+
+      backendProcess.stderr.on('data', (data) => {
+        console.error('[Backend Error]', data.toString());
+      });
+
+      backendProcess.on('error', (err) => {
+        console.error('Failed to start backend:', err);
+        reject(err);
+      });
+
+      backendProcess.on('exit', (code) => {
+        console.log('Backend process exited with code:', code);
+        backendProcess = null;
+      });
+
+      checkBackendHealth(10, 1000)
+        .then(() => {
+          console.log('Backend is ready');
+          resolve();
+        })
+        .catch(reject);
+    });
+  }
+
   return new Promise((resolve, reject) => {
     const basePath = isDev ? __dirname : process.resourcesPath;
 
